@@ -1,5 +1,5 @@
 class LocationNode<T extends Comparable<T>, N extends Comparable<N>> {
-    private T info;
+    private final T info;
     private MapEdge<T, N> edge;
     private int indegree;
     private int outdegree;
