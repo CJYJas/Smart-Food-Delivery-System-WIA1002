@@ -1,4 +1,4 @@
-class LocationNode<T extends Comparable<T>, N extends Comparable<N>> {
+public class LocationNode<T extends Comparable<T>, N extends Comparable<N>> {
     private final T info;
     private MapEdge<T, N> edge;
     private int indegree;

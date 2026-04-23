@@ -1,4 +1,6 @@
-class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
+import java.util.*;
+
+public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
     private LocationNode<T, N> head;
 
     public CityGraph() {
@@ -74,21 +76,53 @@ class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
         return null;
     }
 
-    public MapEdge<T, N> getShortestPath(T from, T to) {
-        LocationNode<T, N> fromNode = findLocation(from);
-        LocationNode<T, N> toNode = findLocation(to);
-        if (fromNode == null || toNode == null) {
-            return null;
+    private final Map<LocationNode<T, N>, LocationNode<T, N>> pathTracker = new HashMap<>();
+
+    public List<T> getShortestPath(T from, T to) {
+        List<T> path = new ArrayList<>();
+        LocationNode<T, N> current = findLocation(to);
+        while (current != null) {
+            path.add(0, current.getInfo());
+            current = pathTracker.get(current);
         }
-        // Implement Dijkstra's algorithm or any shortest path algorithm here
-        // This is a placeholder for the actual implementation
-        return null;
+        return path;
     }
 
     public Double  getShortestDistance(T from, T to) {
-        MapEdge<T, N> shortestPath = getShortestPath(from, to);
-        if (shortestPath != null) {
-            return shortestPath.getWeight();
+        LocationNode<T, N> fromNode = findLocation(from);
+        LocationNode<T, N> toNode = findLocation(to);
+
+        if (fromNode == null || toNode == null) {
+            return Double.MAX_VALUE;
+        }
+
+        Map<LocationNode<T, N>, Double> distances = new HashMap<>();
+        PriorityQueue<LocationDistance<T, N>> pq = new PriorityQueue<>();
+
+        distances.put(fromNode, 0.0);
+        pq.add(new LocationDistance<>(fromNode, 0.0));
+
+        while (!pq.isEmpty()) {
+            LocationDistance<T, N> current = pq.poll();
+            LocationNode<T, N> currentNode = current.location;
+
+            if (currentNode.equals(toNode)) {
+                return current.totalDistance;
+            }
+
+            MapEdge<T, N> edge = currentNode.getEdge();
+            while (edge != null) {
+                LocationNode<T, N> neighbor = edge.getDestination();
+                double weight = edge.getWeight();
+                double newDist = current.totalDistance + weight;
+
+                if (newDist < distances.getOrDefault(neighbor, Double.MAX_VALUE)) {
+                    distances.put(neighbor, newDist);
+                    pathTracker.put(neighbor, currentNode);
+                    pq.add(new LocationDistance<>(neighbor, newDist));
+                }
+                edge = edge.nextEdge;
+            }
         }
         return Double.MAX_VALUE;
     }

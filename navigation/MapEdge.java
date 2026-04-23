@@ -1,8 +1,8 @@
 
-class MapEdge<T extends Comparable<T>, N extends Comparable<N>> {
+public class MapEdge<T extends Comparable<T>, N extends Comparable<N>> {
     private final LocationNode<T, N> destination;
     private final Double weight;
-    MapEdge<T, N> nextEdge;
+    public MapEdge<T, N> nextEdge;
 
     public MapEdge(LocationNode<T, N> destination, Double weight) {
         this.destination = destination;
