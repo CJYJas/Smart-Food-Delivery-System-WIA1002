@@ -40,5 +40,5 @@ public class LocationNode<T extends Comparable<T>, N extends Comparable<N>> {
     public void setOutdegree(int outdegree) {
         this.outdegree = outdegree;
     }
-    
+
 }

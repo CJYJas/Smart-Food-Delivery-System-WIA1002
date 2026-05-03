@@ -20,7 +20,7 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
         }
     }
 
-    public void addRoad(T from, T to, double  weight) {
+    public void addRoad(T from, T to, double weight) {
         LocationNode<T, N> fromNode = findLocation(from);
         LocationNode<T, N> toNode = findLocation(to);
         if (fromNode != null && toNode != null) {
@@ -88,7 +88,7 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
         return path;
     }
 
-    public Double  getShortestDistance(T from, T to) {
+    public Double getShortestDistance(T from, T to) {
         LocationNode<T, N> fromNode = findLocation(from);
         LocationNode<T, N> toNode = findLocation(to);
 
@@ -140,5 +140,5 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
             current = current.nextNode;
         }
     }
-    
+
 }
