@@ -49,4 +49,23 @@ public class Order {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public double getTotalPrice() {
+        double total = 0;
+        for (OrderItem item : items) {
+            total += item.getTotalPrice();
+        }
+        return total;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", user=" + user.getName() +
+                ", restaurant=" + restaurant.getName() +
+                ", items=" + items.size() +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

@@ -16,4 +16,8 @@ public class OrderItem {
     public int getQuantity() {
         return quantity;
     }
+
+    public double getTotalPrice() {
+        return foodItem.getPrice() * quantity;
+    }
 }
