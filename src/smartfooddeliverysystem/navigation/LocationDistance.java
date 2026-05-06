@@ -1,3 +1,5 @@
+package navigation;
+
 public class LocationDistance<T extends Comparable<T>, N extends Comparable<N>> implements Comparable<LocationDistance<T, N>> {
     LocationNode<T, N> location;
     double totalDistance;
