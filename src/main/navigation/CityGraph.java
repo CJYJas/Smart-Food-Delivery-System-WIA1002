@@ -1,3 +1,5 @@
+package navigation;
+
 import java.util.*;
 
 public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
