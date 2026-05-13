@@ -80,17 +80,7 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
 
     private final Map<LocationNode<T, N>, LocationNode<T, N>> pathTracker = new HashMap<>();
 
-    public List<T> getShortestPath(T from, T to) {
-        List<T> path = new ArrayList<>();
-        LocationNode<T, N> current = findLocation(to);
-        while (current != null) {
-            path.add(0, current.getInfo());
-            current = pathTracker.get(current);
-        }
-        return path;
-    }
-
-    public Double  getShortestDistance(T from, T to) {
+    public double getShortestDistance(T from, T to) {
         LocationNode<T, N> fromNode = findLocation(from);
         LocationNode<T, N> toNode = findLocation(to);
 
@@ -98,6 +88,7 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
             return Double.MAX_VALUE;
         }
 
+        pathTracker.clear();
         Map<LocationNode<T, N>, Double> distances = new HashMap<>();
         PriorityQueue<LocationDistance<T, N>> pq = new PriorityQueue<>();
 
@@ -107,6 +98,11 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
         while (!pq.isEmpty()) {
             LocationDistance<T, N> current = pq.poll();
             LocationNode<T, N> currentNode = current.location;
+
+            // Ignore outdated queue entries (same node was later reached with a shorter distance)
+            if (current.totalDistance > distances.getOrDefault(currentNode, Double.MAX_VALUE)) {
+                continue;
+            }
 
             if (currentNode.equals(toNode)) {
                 return current.totalDistance;
@@ -127,6 +123,32 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
             }
         }
         return Double.MAX_VALUE;
+    }
+
+    public List<T> getShortestPath(T from, T to) {
+        LocationNode<T, N> fromNode = findLocation(from);
+        LocationNode<T, N> toNode = findLocation(to);
+        if (fromNode == null || toNode == null) {
+            return new ArrayList<>();
+        }
+
+        if (getShortestDistance(from, to) == Double.MAX_VALUE) {
+            return new ArrayList<>();
+        }
+
+        List<T> path = new ArrayList<>();
+        LocationNode<T, N> current = toNode;
+        while (current != null) {
+            path.add(0, current.getInfo());
+            if (current.equals(fromNode)) {
+                break;
+            }
+            current = pathTracker.get(current);
+        }
+        if (path.isEmpty() || !path.get(0).equals(from)) {
+            return new ArrayList<>();
+        }
+        return path;
     }
 
     public void printGraph() {

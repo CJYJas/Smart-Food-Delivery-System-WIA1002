@@ -2,7 +2,6 @@ import model.*;
 import navigation.*;
 import order.*;
 import search.*;
-import rider.*;
 import java.util.*;
 import java.io.*;
 
@@ -12,8 +11,7 @@ public class App {
     private static final OrderService orderService = new OrderService();
     private static final SearchService searchService = new SearchService();
     private static final CityGraph<String, Integer> map = new CityGraph<>();
-    //private static final BST foodSearch = new BST();
-    
+
     private static User currentUser;
     private static final List<User> users = new ArrayList<>();
     private static final List<Restaurant> restaurants = new ArrayList<>();
@@ -22,65 +20,72 @@ public class App {
         initializeData();
         loadUsers();
 
-        System.out.println("===========================================");
-        System.out.println("   WELCOME TO SMART FOOD DELIVERY SYSTEM   ");
-        System.out.println("===========================================");
+        printHeader("WELCOME TO SMART FOOD DELIVERY SYSTEM");
 
         while (true) {
             if (currentUser == null) {
-                System.out.println("\n1. Login");
-                System.out.println("2. Signup");
-                System.out.println("0. Exit");
-                System.out.print("Choose an option: ");
-                
-                String input = scanner.nextLine();
-                switch (input) {
-                    case "1" -> login();
-                    case "2" -> signup();
-                    case "0" -> {
-                        System.out.println("Thank you for using Smart Food Delivery System!");
-                        return;
-                    }
-                    default -> System.out.println("Invalid choice. Try again.");
-                }
+                guestMenu();
             } else {
-                System.out.println("\n--- MAIN MENU ---");
-                System.out.println("1. View Restaurants & Menus");
-                System.out.println("2. Search Food");
-                System.out.println("3. Search Restaurant");
-                System.out.println("4. Place Order");
-                System.out.println("5. Manage Current Order (Undo/Confirm)");
-                System.out.println("6. View Shortest Delivery Path");
-                System.out.println("7. Process Next Order (Admin)");
-                System.out.println("8. Logout");
-                System.out.println("0. Exit");
-                System.out.print("Choose an option: ");
-                
-                String input = scanner.nextLine();
-                switch (input) {
-                    case "1" -> viewRestaurants();
-                    case "2" -> searchFood();
-                    case "3" -> searchRestaurant();
-                    case "4" -> startOrdering();
-                    case "5" -> manageOrder();
-                    case "6" -> viewPath();
-                    case "7" -> orderService.processNextOrder();
-                    case "8" -> {
-                        currentUser = null;
-                        System.out.println("Logged out successfully.");
-                    }
-                    case "0" -> {
-                        System.out.println("Thank you for using Smart Food Delivery System!");
-                        return;
-                    }
-                    default -> System.out.println("Invalid choice. Try again.");
-                }
+                mainMenu();
             }
         }
     }
 
+    private static void guestMenu() {
+        printHeader("HOME");
+        System.out.println("  1. Login");
+        System.out.println("  2. Sign up");
+        System.out.println("  0. Exit");
+        System.out.println("-----------------------------------------");
+        String input = scanner.nextLine().trim();
+        switch (input) {
+            case "1" -> login();
+            case "2" -> signup();
+            case "0" -> exitApp();
+            default -> System.out.println("Invalid choice. Enter 1, 2, or 0.");
+        }
+    }
+
+    private static void mainMenu() {
+        printHeader("MAIN MENU — " + currentUser.getUsername());
+        System.out.println("  1. View restaurants & menus");
+        System.out.println("  2. Search food");
+        System.out.println("  3. Search restaurant");
+        System.out.println("  4. Place order");
+        System.out.println("  5. Manage order (undo / confirm)");
+        System.out.println("  6. Shortest delivery path to home");
+        System.out.println("  7. Process next order (admin) — pending: " + orderService.getPendingCount());
+        System.out.println("  8. Log out");
+        System.out.println("  0. Exit");
+        System.out.println("-----------------------------------------");
+        String input = scanner.nextLine().trim();
+        switch (input) {
+            case "1" -> viewRestaurants();
+            case "2" -> searchFood();
+            case "3" -> searchRestaurant();
+            case "4" -> startOrdering();
+            case "5" -> manageOrder();
+            case "6" -> viewPath();
+            case "7" -> {
+                orderService.processNextOrder();
+                pause();
+            }
+            case "8" -> {
+                currentUser = null;
+                System.out.println("You have been logged out.");
+                pause();
+            }
+            case "0" -> exitApp();
+            default -> System.out.println("Invalid choice. Pick a number from the menu.");
+        }
+    }
+
+    private static void exitApp() {
+        System.out.println("Thank you for using Smart Food Delivery System.");
+        System.exit(0);
+    }
+
     private static void initializeData() {
-        // Initialize Map
         map.addLocation("User Home");
         map.addLocation("McD");
         map.addLocation("KFC");
@@ -88,7 +93,7 @@ public class App {
         map.addLocation("Subway");
         map.addLocation("Sushi King");
         map.addLocation("Central Mall");
-        
+
         map.addRoad("User Home", "McD", 5.0);
         map.addRoad("McD", "User Home", 5.0);
         map.addRoad("McD", "Central Mall", 3.0);
@@ -106,44 +111,37 @@ public class App {
         map.addRoad("Subway", "User Home", 7.5);
         map.addRoad("User Home", "Subway", 7.5);
 
-        // Initialize Restaurants & Food
-        
-        // 1. McD
         Restaurant mcd = new Restaurant(1, "McD", "McD Street", 4.5);
         addFood(mcd, new FoodItem(101, "Big Mac", 15.50, "Burger", 1));
         addFood(mcd, new FoodItem(102, "Fries", 6.00, "Side", 1));
         addFood(mcd, new FoodItem(103, "McChicken", 12.00, "Burger", 1));
         restaurants.add(mcd);
 
-        // 2. KFC
         Restaurant kfc = new Restaurant(2, "KFC", "KFC Avenue", 4.3);
         addFood(kfc, new FoodItem(201, "Zinger Burger", 14.50, "Burger", 2));
         addFood(kfc, new FoodItem(202, "2-pc Combo", 18.00, "Chicken", 2));
         addFood(kfc, new FoodItem(203, "Whipped Potato", 5.50, "Side", 2));
         restaurants.add(kfc);
 
-        // 3. Pizza Hut
         Restaurant pizzaHut = new Restaurant(3, "Pizza Hut", "Pizza Plaza", 4.2);
         addFood(pizzaHut, new FoodItem(301, "Pepperoni Pizza", 25.00, "Pizza", 3));
         addFood(pizzaHut, new FoodItem(302, "Garlic Bread", 8.00, "Side", 3));
         addFood(pizzaHut, new FoodItem(303, "Spaghetti Carbonara", 16.50, "Pasta", 3));
         restaurants.add(pizzaHut);
 
-        // 4. Subway
         Restaurant subway = new Restaurant(4, "Subway", "Central Mall", 4.6);
         addFood(subway, new FoodItem(401, "Italian BMT", 14.90, "Sandwich", 4));
         addFood(subway, new FoodItem(402, "Roasted Chicken", 13.50, "Sandwich", 4));
         addFood(subway, new FoodItem(403, "Chocolate Chip Cookie", 2.50, "Dessert", 4));
         restaurants.add(subway);
 
-        // 5. Sushi King
         Restaurant sushiKing = new Restaurant(5, "Sushi King", "Central Mall", 4.4);
         addFood(sushiKing, new FoodItem(501, "Salmon Sushi", 6.00, "Sushi", 5));
         addFood(sushiKing, new FoodItem(502, "Ebi Tempura", 12.00, "Side", 5));
         addFood(sushiKing, new FoodItem(503, "Chicken Teriyaki Don", 15.00, "Main", 5));
         restaurants.add(sushiKing);
 
-        System.out.println("System data initialized successfully.");
+        System.out.println("Loaded " + restaurants.size() + " restaurants and city map.");
     }
 
     private static void addFood(Restaurant r, FoodItem item) {
@@ -152,40 +150,55 @@ public class App {
     }
 
     private static void login() {
-        System.out.println("\n--- LOGIN ---");
+        printHeader("LOGIN");
         System.out.print("Username: ");
-        String username = scanner.nextLine();
+        String username = scanner.nextLine().trim();
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
         for (User user : users) {
-            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+            if (user.getUsername().equalsIgnoreCase(username) && user.getPassword().equals(password)) {
                 currentUser = user;
-                System.out.println("Login successful! Welcome, " + currentUser.getUsername());
+                System.out.println("Welcome back, " + currentUser.getUsername() + ".");
+                pause();
                 return;
             }
         }
         System.out.println("Invalid username or password.");
+        pause();
     }
 
     private static void signup() {
-        System.out.println("\n--- SIGNUP ---");
-        System.out.print("Enter Username: ");
-        String username = scanner.nextLine();
-        System.out.print("Enter Password: ");
+        printHeader("SIGN UP");
+        System.out.print("Username: ");
+        String username = scanner.nextLine().trim();
+        if (username.isEmpty()) {
+            System.out.println("Username cannot be empty.");
+            pause();
+            return;
+        }
+        for (User u : users) {
+            if (u.getUsername().equalsIgnoreCase(username)) {
+                System.out.println("That username is already taken.");
+                pause();
+                return;
+            }
+        }
+        System.out.print("Password: ");
         String password = scanner.nextLine();
-        System.out.print("Enter Email: ");
-        String email = scanner.nextLine();
-        System.out.print("Enter Phone: ");
-        String phone = scanner.nextLine();
-        System.out.print("Enter Address: ");
-        String address = scanner.nextLine();
+        System.out.print("Email: ");
+        String email = scanner.nextLine().trim();
+        System.out.print("Phone: ");
+        String phone = scanner.nextLine().trim();
+        System.out.print("Address: ");
+        String address = scanner.nextLine().trim();
 
-        int newId = users.size() + 1;
+        int newId = users.isEmpty() ? 1 : users.stream().mapToInt(User::getUserID).max().orElse(0) + 1;
         User newUser = new User(newId, username, password, email, phone, address);
         users.add(newUser);
         saveUser(newUser);
-        System.out.println("Signup successful! You can now login.");
+        System.out.println("Account created. You can log in now.");
+        pause();
     }
 
     private static void loadUsers() {
@@ -205,7 +218,7 @@ public class App {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Users file not found. Starting with empty user list.");
+            // First run: no users file yet
         }
     }
 
@@ -225,129 +238,219 @@ public class App {
     }
 
     private static void viewRestaurants() {
-        System.out.println("\n--- RESTAURANTS ---");
+        printHeader("RESTAURANTS");
         for (int i = 0; i < restaurants.size(); i++) {
             Restaurant r = restaurants.get(i);
-            System.out.println((i + 1) + ". " + r.getName() + " (" + r.getLocation() + ") - Rating: " + r.getRating());
+            System.out.printf("  %d. %-14s  %s  (rating %.1f)%n",
+                i + 1, r.getName(), r.getLocation(), r.getRating());
         }
-        System.out.print("Enter restaurant number to see menu (0 to go back): ");
-        try {
-            int choice = Integer.parseInt(scanner.nextLine());
-            if (choice > 0 && choice <= restaurants.size()) {
-                Restaurant selected = restaurants.get(choice - 1);
-                System.out.println("\n--- MENU FOR " + selected.getName() + " ---");
-                for (FoodItem item : selected.getMenu()) {
-                    System.out.println(item);
-                }
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input.");
+        System.out.println("-----------------------------------------");
+        Integer choice = readOptionalInt("Menu # to open (0 = back): ", 0, restaurants.size());
+        if (choice == null || choice == 0) {
+            return;
         }
+        Restaurant selected = restaurants.get(choice - 1);
+        printHeader("MENU — " + selected.getName());
+        for (FoodItem item : selected.getMenu()) {
+            System.out.println("  " + item);
+        }
+        pause();
     }
 
     private static void searchFood() {
-        System.out.println("\n--- SEARCH FOOD ---");
-        System.out.print("Enter food name: ");
-        String query = scanner.nextLine();
+        printHeader("SEARCH FOOD");
+        System.out.print("Name (letters only match the index; e.g. Big Mac or bigmac): ");
+        String query = scanner.nextLine().trim();
+        if (query.isEmpty()) {
+            System.out.println("Empty search.");
+            pause();
+            return;
+        }
         FoodItem found = searchService.findFood(query);
         if (found != null) {
             System.out.println("Found: " + found);
         } else {
-            System.out.println("Food item not found.");
+            System.out.println("No exact match. Try the full food name as on the menu.");
         }
+        pause();
     }
 
     private static void searchRestaurant() {
-        System.out.println("\n--- SEARCH RESTAURANT ---");
-        System.out.print("Enter restaurant name: ");
-        String query = scanner.nextLine();
+        printHeader("SEARCH RESTAURANT");
+        System.out.print("Name (partial match OK): ");
+        String query = scanner.nextLine().trim().toLowerCase();
+        if (query.isEmpty()) {
+            System.out.println("Empty search.");
+            pause();
+            return;
+        }
         boolean found = false;
         for (Restaurant r : restaurants) {
-            if (r.getName().equalsIgnoreCase(query)) {
-                System.out.println("Found: " + r);
+            if (r.getName().toLowerCase().contains(query)) {
+                System.out.println("  " + r);
                 found = true;
             }
         }
         if (!found) {
-            System.out.println("Restaurant not found.");
+            System.out.println("No restaurant matched.");
         }
+        pause();
     }
 
     private static void startOrdering() {
         if (currentUser == null) {
-            System.out.println("Please login first.");
+            System.out.println("Please log in first.");
+            pause();
             return;
         }
-        System.out.println("\n--- PLACE ORDER ---");
-        System.out.println("Select a restaurant:");
+        printHeader("PLACE ORDER");
+        System.out.println("Pick a restaurant:");
         for (int i = 0; i < restaurants.size(); i++) {
-            System.out.println((i + 1) + ". " + restaurants.get(i).getName());
+            System.out.println("  " + (i + 1) + ". " + restaurants.get(i).getName());
         }
-        int resChoice = scanner.nextInt() - 1;
-        scanner.nextLine();
-        
-        if (resChoice >= 0 && resChoice < restaurants.size()) {
-            Restaurant selected = restaurants.get(resChoice);
-            orderService.createNewOrder(currentUser, selected);
-            System.out.println("Ordering from " + selected.getName());
-            
-            List<FoodItem> menu = selected.getMenu();
-            for (int i = 0; i < menu.size(); i++) {
-                System.out.println((i + 1) + ". " + menu.get(i));
+        System.out.println("-----------------------------------------");
+        Integer resChoice = readOptionalInt("Restaurant # (0 = cancel): ", 0, restaurants.size());
+        if (resChoice == null || resChoice == 0) {
+            return;
+        }
+        Restaurant selected = restaurants.get(resChoice - 1);
+        orderService.createNewOrder(currentUser, selected);
+
+        List<FoodItem> menu = selected.getMenu();
+        printHeader("ADD ITEMS — " + selected.getName());
+        for (int i = 0; i < menu.size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + menu.get(i));
+        }
+        System.out.println("-----------------------------------------");
+        System.out.println("Enter item numbers to add. Empty line when done.");
+
+        while (true) {
+            System.out.print("Item # (blank = done): ");
+            String line = scanner.nextLine().trim();
+            if (line.isEmpty()) {
+                break;
             }
-            
-            System.out.print("Enter item number to add (0 to stop): ");
-            int itemChoice;
-            while ((itemChoice = scanner.nextInt()) != 0) {
+            try {
+                int itemChoice = Integer.parseInt(line);
                 if (itemChoice > 0 && itemChoice <= menu.size()) {
                     OrderItem oi = new OrderItem(menu.get(itemChoice - 1), 1);
                     orderService.addItemToCart(oi);
+                } else {
+                    System.out.println("  Pick a number between 1 and " + menu.size() + ".");
                 }
-                System.out.print("Add another? (0 to stop): ");
+            } catch (NumberFormatException e) {
+                System.out.println("  Enter a number or leave blank to finish.");
             }
-            scanner.nextLine();
         }
+
+        System.out.println("-----------------------------------------");
+        orderService.printCartOverview(restaurants);
+        System.out.printf("Cart total: RM %.2f%n", orderService.getCartTotal());
+        System.out.println("Use \"Manage order\" to undo or confirm.");
+        pause();
     }
 
     private static void manageOrder() {
-        System.out.println("\n--- MANAGE ORDER ---");
-        System.out.println("1. Undo last item");
-        System.out.println("2. Confirm Order");
-        System.out.print("Choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        
+        printHeader("MANAGE ORDER");
+        orderService.printCartOverview(restaurants);
+        if (!orderService.isCartEmpty()) {
+            System.out.printf("Total: RM %.2f%n", orderService.getCartTotal());
+        }
+        System.out.println("-----------------------------------------");
+        System.out.println("  1. Undo last item");
+        System.out.println("  2. Confirm order");
+        System.out.println("  0. Back");
+        Integer choice = readOptionalInt("Choice: ", 0, 2);
+        if (choice == null || choice == 0) {
+            return;
+        }
         if (choice == 1) {
             orderService.undoLastItem();
-        } else if (choice == 2) {
-            orderService.confirmOrder(new Random().nextInt(1000), currentUser, restaurants.get(0));
+            pause();
+            return;
         }
+        int rid = orderService.getCartRestaurantId();
+        if (rid < 0) {
+            System.out.println("Cart is empty. Add items under Place order first.");
+            pause();
+            return;
+        }
+        Restaurant r = null;
+        for (Restaurant x : restaurants) {
+            if (x.getRestaurantID() == rid) {
+                r = x;
+                break;
+            }
+        }
+        if (r == null) {
+            System.out.println("Could not match cart to a restaurant.");
+            pause();
+            return;
+        }
+        int orderId = (int) (System.currentTimeMillis() % 900000) + 100000;
+        orderService.confirmOrder(orderId, currentUser, r);
+        pause();
     }
 
     private static void viewPath() {
-        System.out.println("\n--- DELIVERY PATH ---");
-        System.out.println("Select a Restaurant:");
+        printHeader("DELIVERY PATH → USER HOME");
         for (int i = 0; i < restaurants.size(); i++) {
-            System.out.println((i + 1) + ". " + restaurants.get(i).getName());
+            System.out.println("  " + (i + 1) + ". " + restaurants.get(i).getName());
         }
-        System.out.print("Choice: ");
-        try {
-            int choice = Integer.parseInt(scanner.nextLine());
-            if (choice > 0 && choice <= restaurants.size()) {
-                String resName = restaurants.get(choice - 1).getName();
-                if (map.hasLocation(resName)) {
-                    double distance = map.getShortestDistance(resName, "User Home");
-                    List<String> path = map.getShortestPath(resName, "User Home");
-                    System.out.println("\nShortest distance to Home: " + distance + " km");
-                    System.out.println("Path: " + String.join(" -> ", path));
-                } else {
-                    System.out.println("Restaurant location not found on map.");
+        System.out.println("-----------------------------------------");
+        Integer choice = readOptionalInt("Restaurant # (0 = back): ", 0, restaurants.size());
+        if (choice == null || choice == 0) {
+            return;
+        }
+        String resName = restaurants.get(choice - 1).getName();
+        if (!map.hasLocation(resName)) {
+            System.out.println("That restaurant is not on the city map.");
+            pause();
+            return;
+        }
+        double distance = map.getShortestDistance(resName, "User Home");
+        List<String> path = map.getShortestPath(resName, "User Home");
+        if (distance >= Double.MAX_VALUE / 2 || path.isEmpty()) {
+            System.out.println("No route found to User Home.");
+        } else {
+            System.out.printf("Shortest distance: %.2f km%n", distance);
+            System.out.println("Path: " + String.join(" → ", path));
+        }
+        pause();
+    }
+
+    // --- CLI helpers ---
+
+    private static void printHeader(String title) {
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("  " + title);
+        System.out.println("========================================");
+    }
+
+    private static void pause() {
+        System.out.println("-----------------------------------------");
+        System.out.print("Press Enter to continue... ");
+        scanner.nextLine();
+    }
+
+    /**
+     * @return null if input invalid after retries, or chosen value in [min, max]
+     */
+    private static Integer readOptionalInt(String prompt, int min, int max) {
+        for (int attempt = 0; attempt < 5; attempt++) {
+            System.out.print(prompt);
+            String line = scanner.nextLine().trim();
+            try {
+                int v = Integer.parseInt(line);
+                if (v >= min && v <= max) {
+                    return v;
                 }
-            } else {
-                System.out.println("Invalid choice.");
+            } catch (NumberFormatException ignored) {
             }
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number.");
+            System.out.println("  Enter a whole number between " + min + " and " + max + ".");
         }
+        System.out.println("  Too many invalid tries. Returning.");
+        return null;
     }
 }

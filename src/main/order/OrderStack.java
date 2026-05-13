@@ -1,6 +1,8 @@
 package order;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import model.OrderItem;
 
 public class OrderStack {
@@ -30,5 +32,10 @@ public class OrderStack {
     
     public boolean isEmpty(){
         return orderItems.isEmpty();
+    }
+
+    /** Items in add order (first added first); stack top is last element. */
+    public List<OrderItem> getOrderedItems() {
+        return Collections.unmodifiableList(new ArrayList<>(orderItems));
     }
 }

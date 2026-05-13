@@ -1,5 +1,7 @@
 package order;
 
+import java.util.List;
+
 import model.Order;
 import model.OrderItem;
 import model.Restaurant;
@@ -15,8 +17,16 @@ public class OrderService {
     }
 
     public void createNewOrder(User user, Restaurant restaurant) {
-        cartStack = new OrderStack(); 
-        System.out.println("New order created. Cart is now empty.");
+        cartStack = new OrderStack();
+        System.out.println("Ordering from " + restaurant.getName() + ". Cart cleared — add items below.");
+    }
+
+    /** Restaurant id from the first line in the cart, or -1 if the cart is empty. */
+    public int getCartRestaurantId() {
+        if (cartStack.isEmpty()) {
+            return -1;
+        }
+        return cartStack.getOrderedItems().get(0).getFoodItem().getRestaurantID();
     }
 
     public void addItemToCart(OrderItem item) {
@@ -45,6 +55,37 @@ public class OrderService {
         }
         processingQueue.enqueue(newOrder);
         System.out.println("Order #" + orderId + " placed successfully!");
+    }
+
+    public void printCartOverview(List<Restaurant> restaurants) {
+        if (cartStack.isEmpty()) {
+            System.out.println("Cart is empty.");
+            return;
+        }
+        int rid = getCartRestaurantId();
+        for (Restaurant r : restaurants) {
+            if (r.getRestaurantID() == rid) {
+                System.out.println("Restaurant: " + r.getName());
+                break;
+            }
+        }
+        int n = 1;
+        for (OrderItem oi : cartStack.getOrderedItems()) {
+            System.out.printf("  %d. %s  x%d  RM %.2f%n",
+                n++, oi.getFoodItem().getName(), oi.getQuantity(), oi.getTotalPrice());
+        }
+    }
+
+    public double getCartTotal() {
+        double t = 0;
+        for (OrderItem oi : cartStack.getOrderedItems()) {
+            t += oi.getTotalPrice();
+        }
+        return t;
+    }
+
+    public boolean isCartEmpty() {
+        return cartStack.isEmpty();
     }
 
     public void processNextOrder() {
