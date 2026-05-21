@@ -1,4 +1,4 @@
-package rider;
+package main.rider;
 
 public class Rider implements Comparable<Rider> {
     // instance variables

@@ -1,4 +1,4 @@
-package navigation;
+package main.navigation;
 
 import java.util.*;
 

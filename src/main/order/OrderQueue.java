@@ -1,7 +1,7 @@
-package order;
+package main.order;
 
 import java.util.LinkedList;
-import model.*;
+import main.model.*;
 
 public class OrderQueue {
     private LinkedList<Order> orders;

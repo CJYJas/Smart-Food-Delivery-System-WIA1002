@@ -1,4 +1,4 @@
-package navigation;
+package main.navigation;
 
 public class LocationNode<T extends Comparable<T>, N extends Comparable<N>> {
     private final T info;

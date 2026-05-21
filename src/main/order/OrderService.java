@@ -1,11 +1,9 @@
-package order;
+package main.order;
 
-import java.util.List;
-
-import model.Order;
-import model.OrderItem;
-import model.Restaurant;
-import model.User;
+import main.model.Order;
+import main.model.OrderItem;
+import main.model.Restaurant;
+import main.model.User;
 
 public class OrderService {
     private OrderStack cartStack;

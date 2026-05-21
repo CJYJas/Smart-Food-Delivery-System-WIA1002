@@ -1,9 +1,9 @@
-package user;
+package main.user;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import model.User;
+import main.model.User;
 
 public class UserManager {
     private List<User> users;

@@ -1,9 +1,11 @@
-import model.*;
-import navigation.*;
-import order.*;
-import search.*;
-import java.util.*;
+package main;
+
 import java.io.*;
+import java.util.*;
+import main.model.*;
+import main.navigation.*;
+import main.order.*;
+import main.search.*;
 
 public class App {
     private static final String USERS_FILE = "users.txt";

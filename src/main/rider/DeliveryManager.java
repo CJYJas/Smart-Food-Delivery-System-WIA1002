@@ -1,7 +1,7 @@
-package rider;
+package main.rider;
 
-import navigation.*;
 import java.util.PriorityQueue;
+import main.navigation.*;
 
 public class DeliveryManager {
     // instance variables

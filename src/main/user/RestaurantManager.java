@@ -1,8 +1,8 @@
-package user;
+package main.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import model.Restaurant;
+import main.model.Restaurant;
 import java.util.HashMap;
 
 public class RestaurantManager {

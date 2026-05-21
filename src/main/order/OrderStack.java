@@ -1,9 +1,7 @@
-package order;
+package main.order;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import model.OrderItem;
+import main.model.OrderItem;
 
 public class OrderStack {
     private final ArrayList<OrderItem> orderItems;

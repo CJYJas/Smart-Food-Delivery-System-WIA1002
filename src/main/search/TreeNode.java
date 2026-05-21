@@ -1,6 +1,6 @@
-package search;
+package main.search;
 
-import model.FoodItem;
+import main.model.FoodItem;
 
 class TreeNode {
     FoodItem item;

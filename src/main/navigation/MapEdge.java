@@ -1,4 +1,4 @@
-package navigation;
+package main.navigation;
 
 public class MapEdge<T extends Comparable<T>, N extends Comparable<N>> {
     private final LocationNode<T, N> destination;
