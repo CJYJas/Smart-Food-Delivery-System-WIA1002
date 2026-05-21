@@ -50,6 +50,7 @@ public class Restaurant {
         this.rating = rating;
     }
 
+    @Override
     public String toString() {
         return String.format("%-5s %-25s %-15s %.1f/5.0 | Items: %d", "[ID: " + restaurantID + "]", name, location,
                 rating, menu.size());
