@@ -60,5 +60,4 @@ public class FoodItem {
     public String toString() {
         return String.format("[%d] %-15s | RM%.2f | (%s)", itemID, name, price, category);
     }
-
 }

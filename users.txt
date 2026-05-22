@@ -1,1 +1,2 @@
 1|jasmine|123456|jasmine@example.com|011-1111111|jasmine home
+2|shaoern|060606|shaoern0606@gmail.com|0123456789|Perai
