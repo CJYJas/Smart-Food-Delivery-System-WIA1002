@@ -1,30 +1,35 @@
 package main.user;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import main.model.Restaurant;
-import java.util.HashMap;
 
 public class RestaurantManager {
 
-    private List<Restaurant> restaurants;
-    private HashMap<Integer, Restaurant> restaurantMap;
+    private LinkedList<Restaurant> restaurants;
 
     public RestaurantManager() {
-        this.restaurants = new ArrayList<>();
-        this.restaurantMap = new HashMap<>();
+        this.restaurants = new LinkedList<>();
     }
 
     public void addRestaurant(Restaurant restaurant) {
+        if(searchRestaurant(restaurant.getRestaurantID()) != null) {
+            System.out.println("Restaurant with ID " + restaurant.getRestaurantID() + " already exists.");
+            return;
+        }
         restaurants.add(restaurant);
-        restaurantMap.put(restaurant.getRestaurantID(), restaurant);
         System.out.println("Restaurant added: " + restaurant.getName());
     }
 
-    public void removeRestaurant(int restaurantID) {
-        restaurants.removeIf(restaurant -> restaurant.getRestaurantID() == restaurantID);
-        restaurantMap.remove(restaurantID);
-        System.out.println("Restaurant removed: " + restaurantID);
+    public boolean removeRestaurant(int restaurantID) {
+        for (int i = 0; i < restaurants.size(); i++) {
+            Restaurant restaurant = restaurants.get(i);
+            if (restaurant.getRestaurantID() == restaurantID) {
+                restaurants.remove(i);
+                System.out.println("Restaurant removed: " + restaurant.getName());
+                return true;
+            }
+        }        System.out.println("Restaurant with ID " + restaurantID + " not found.");
+        return false;
     }
 
     public void displayRestaurant() {
@@ -35,7 +40,13 @@ public class RestaurantManager {
     }
 
     public Restaurant searchRestaurant(int restaurantID) {
-        return restaurantMap.get(restaurantID);
+        for (int i = 0; i < restaurants.size(); i++) {
+            Restaurant restaurant = restaurants.get(i);
+            if (restaurant.getRestaurantID() == restaurantID) {
+                return restaurant;
+            }
+        }
+        return null;
     }
 
 }

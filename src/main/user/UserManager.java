@@ -1,29 +1,34 @@
 package main.user;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 import main.model.User;
 
 public class UserManager {
-    private List<User> users;
-    private HashMap<String, User> userMap;
+    private LinkedList<User> users;
 
     public UserManager() {
-        this.users = new ArrayList<>();
-        this.userMap = new HashMap<>();
+        this.users = new LinkedList<>();
     }
 
     public void addUser(User user) {
+        if(searchUser(user.getUsername()) != null) {
+            System.out.println("User with username " + user.getUsername() + " already exists.");
+            return;
+        }
         users.add(user);
-        userMap.put(user.getUsername(), user);
         System.out.println("User added: " + user.getUsername());
     }
 
-    public void removeUser(int userID) {
-        users.removeIf(user -> user.getUserID() == userID);
-        userMap.remove(Integer.toString(userID));
-        System.out.println("User removed: " + userID);
+    public boolean removeUser(int userID) {
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if (user.getUserID() == userID) {
+                users.remove(i);
+                System.out.println("User removed: " + user.getUsername());
+                return true;
+            }
+        }        System.out.println("User with ID " + userID + " not found.");
+        return false;
     }
 
     public void displayUser() {
@@ -34,7 +39,13 @@ public class UserManager {
     }
 
     public User searchUser(String username) {
-        return userMap.get(username);
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
+        return null;
     }
 
 }
