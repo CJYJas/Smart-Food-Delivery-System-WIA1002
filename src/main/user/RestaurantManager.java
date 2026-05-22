@@ -33,9 +33,10 @@ public class RestaurantManager {
     }
 
     public void displayRestaurant() {
-        System.out.println("Restaurants:");
+        System.out.printf("  %-4s  %-16s  %-16s %-10s%n", "ID", "Brand Name", "Hub Location", "Rating");
+        System.out.println("  ----------------------------------------");
         for (Restaurant restaurant : restaurants) {
-            System.out.println(restaurant);
+            System.out.println(restaurant.toString());
         }
     }
 

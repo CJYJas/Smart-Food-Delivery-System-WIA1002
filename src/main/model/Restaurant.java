@@ -52,8 +52,7 @@ public class Restaurant {
 
     @Override
     public String toString() {
-        return String.format("%-5s %-25s %-15s %.1f/5.0 | Items: %d", "[ID: " + restaurantID + "]", name, location,
-                rating, menu.size());
+        return String.format("  [%d]  %-16s  %-16s ★ %.1f", restaurantID, name, location, rating);
     }
 
     public void addFoodItem(FoodItem item) {

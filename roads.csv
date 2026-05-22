@@ -1,0 +1,16 @@
+User Home,McD,5.0
+McD,User Home,5.0
+McD,Central Mall,3.0
+Central Mall,McD,3.0
+User Home,KFC,8.0
+KFC,User Home,8.0
+KFC,Pizza Hut,2.0
+Pizza Hut,KFC,2.0
+Pizza Hut,User Home,6.0
+User Home,Pizza Hut,6.0
+Subway,Central Mall,2.5
+Central Mall,Subway,2.5
+Sushi King,Central Mall,4.0
+Central Mall,Sushi King,4.0
+Subway,User Home,7.5
+User Home,Subway,7.5

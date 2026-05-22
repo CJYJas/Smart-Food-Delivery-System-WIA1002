@@ -6,13 +6,18 @@ import main.model.*;
 import main.navigation.*;
 import main.order.*;
 import main.search.*;
+import main.user.*;
+import main.rider.*;
 
 public class App {
-    private static final String USERS_FILE = "users.txt";
+    public static final String USERS_FILE = "users.txt";
     private static final Scanner scanner = new Scanner(System.in);
     private static final OrderService orderService = new OrderService();
     private static final SearchService searchService = new SearchService();
-    private static final CityGraph<String, Integer> map = new CityGraph<>();
+    private static final CityGraph<String, Double> map = new CityGraph<>();
+    private static final UserManager userManager = new UserManager();
+    private static final RestaurantManager restaurantManager = new RestaurantManager();
+    private static final DeliveryManager deliveryManager = new DeliveryManager(map);
 
     private static User currentUser;
     private static final List<User> users = new ArrayList<>();
@@ -20,7 +25,7 @@ public class App {
 
     public static void main(String[] args) {
         initializeData();
-        loadUsers();
+        User.loadUsers(users, userManager);
 
         printHeader("SMART FOOD DELIVERY SYSTEM");
 
@@ -46,8 +51,11 @@ public class App {
         String input = scanner.nextLine().trim();
 
         switch (input) {
-            case "1" -> login();
-            case "2" -> signup();
+            case "1" -> {
+                User loggedIn = User.login(scanner, userManager);
+                if (loggedIn != null) currentUser = loggedIn;
+            }
+            case "2" -> User.signup(scanner, users, userManager);
             case "0" -> exitApp();
             default -> printError("Invalid option. Please try again.");
         }
@@ -81,6 +89,7 @@ public class App {
             case "7" -> {
                 printStatus("Processing next order...");
                 orderService.processNextOrder();
+                deliveryManager.assignBestRider();
             }
             case "8" -> {
                 currentUser = null;
@@ -97,60 +106,54 @@ public class App {
     }
 
     private static void initializeData() {
-        map.addLocation("User Home");
-        map.addLocation("McD");
-        map.addLocation("KFC");
-        map.addLocation("Pizza Hut");
-        map.addLocation("Subway");
-        map.addLocation("Sushi King");
-        map.addLocation("Central Mall");
+        try (Scanner sc = new Scanner(new File("locations.csv"))) {
+            while (sc.hasNextLine()) {
+                String loc = sc.nextLine().trim();
+                if (!loc.isEmpty()) map.addLocation(loc);
+            }
+        } catch (FileNotFoundException ignored) {}
 
-        map.addRoad("User Home", "McD", 5.0);
-        map.addRoad("McD", "User Home", 5.0);
-        map.addRoad("McD", "Central Mall", 3.0);
-        map.addRoad("Central Mall", "McD", 3.0);
-        map.addRoad("User Home", "KFC", 8.0);
-        map.addRoad("KFC", "User Home", 8.0);
-        map.addRoad("KFC", "Pizza Hut", 2.0);
-        map.addRoad("Pizza Hut", "KFC", 2.0);
-        map.addRoad("Pizza Hut", "User Home", 6.0);
-        map.addRoad("User Home", "Pizza Hut", 6.0);
-        map.addRoad("Subway", "Central Mall", 2.5);
-        map.addRoad("Central Mall", "Subway", 2.5);
-        map.addRoad("Sushi King", "Central Mall", 4.0);
-        map.addRoad("Central Mall", "Sushi King", 4.0);
-        map.addRoad("Subway", "User Home", 7.5);
-        map.addRoad("User Home", "Subway", 7.5);
+        try (Scanner sc = new Scanner(new File("roads.csv"))) {
+            while (sc.hasNextLine()) {
+                String[] parts = sc.nextLine().split(",");
+                if (parts.length == 3) {
+                    map.addRoad(parts[0].trim(), parts[1].trim(), Double.parseDouble(parts[2].trim()));
+                }
+            }
+        } catch (FileNotFoundException ignored) {}
 
-        Restaurant mcd = new Restaurant(1, "McD", "McD Street", 4.5);
-        addFood(mcd, new FoodItem(101, "Big Mac", 15.50, "Burger", 1));
-        addFood(mcd, new FoodItem(102, "Fries", 6.00, "Side", 1));
-        addFood(mcd, new FoodItem(103, "McChicken", 12.00, "Burger", 1));
-        restaurants.add(mcd);
+        try (Scanner sc = new Scanner(new File("restaurants.csv"))) {
+            while (sc.hasNextLine()) {
+                String[] parts = sc.nextLine().split(",");
+                if (parts.length == 4) {
+                    Restaurant r = new Restaurant(Integer.parseInt(parts[0].trim()), parts[1].trim(), parts[2].trim(), Double.parseDouble(parts[3].trim()));
+                    restaurants.add(r);
+                    restaurantManager.addRestaurant(r);
+                }
+            }
+        } catch (FileNotFoundException ignored) {}
 
-        Restaurant kfc = new Restaurant(2, "KFC", "KFC Avenue", 4.3);
-        addFood(kfc, new FoodItem(201, "Zinger Burger", 14.50, "Burger", 2));
-        addFood(kfc, new FoodItem(202, "2-pc Combo", 18.00, "Chicken", 2));
-        addFood(kfc, new FoodItem(203, "Whipped Potato", 5.50, "Side", 2));
-        restaurants.add(kfc);
+        try (Scanner sc = new Scanner(new File("menu.csv"))) {
+            while (sc.hasNextLine()) {
+                String[] parts = sc.nextLine().split(",");
+                if (parts.length == 5) {
+                    FoodItem item = new FoodItem(Integer.parseInt(parts[0].trim()), parts[1].trim(), Double.parseDouble(parts[2].trim()), parts[3].trim(), Integer.parseInt(parts[4].trim()));
+                    Restaurant r = restaurantManager.searchRestaurant(item.getRestaurantID());
+                    if (r != null) {
+                        addFood(r, item);
+                    }
+                }
+            }
+        } catch (FileNotFoundException ignored) {}
 
-        Restaurant pizzaHut = new Restaurant(3, "Pizza Hut", "Pizza Plaza", 4.2);
-        addFood(pizzaHut, new FoodItem(301, "Pepperoni Pizza", 25.00, "Pizza", 3));
-        addFood(pizzaHut, new FoodItem(302, "Garlic Bread", 8.00, "Side", 3));
-        addFood(pizzaHut, new FoodItem(303, "Spaghetti Carbonara", 16.50, "Pasta", 3));
-        restaurants.add(pizzaHut);
-
-        Restaurant subway = new Restaurant(4, "Subway", "Central Mall", 4.6);
-        addFood(subway, new FoodItem(401, "Italian BMT", 14.90, "Sandwich", 4));
-        addFood(subway, new FoodItem(402, "Roasted Chicken", 13.50, "Sandwich", 4));
-        addFood(subway, new FoodItem(403, "Chocolate Chip Cookie", 2.50, "Dessert", 4));
-        restaurants.add(subway);
-
-        Restaurant sushiKing = new Restaurant(5, "Sushi King", "Central Mall", 4.4);
-        addFood(sushiKing, new FoodItem(501, "Salmon Sushi", 6.00, "Sushi", 5));
-        addFood(sushiKing, new FoodItem(502, "Ebi Tempura", 12.00, "Side", 5));
-        addFood(sushiKing, new FoodItem(503, "Chicken Teriyaki Don", 15.00, "Main", 5));
-        restaurants.add(sushiKing);
+        try (Scanner sc = new Scanner(new File("riders.csv"))) {
+            while (sc.hasNextLine()) {
+                String[] parts = sc.nextLine().split(",");
+                if (parts.length == 2) {
+                    deliveryManager.addRider(parts[0].trim(), Double.parseDouble(parts[1].trim()));
+                }
+            }
+        } catch (FileNotFoundException ignored) {}
 
         System.out.println("✔ System ready: Loaded " + restaurants.size() + " restaurants.");
     }
@@ -160,103 +163,20 @@ public class App {
         searchService.addFoodToMenu(item);
     }
 
-    private static void login() {
-        printHeader("USER LOGIN");
-        System.out.print(" 👤 Username: ");
-        String username = scanner.nextLine().trim();
-        System.out.print(" 🔑 Password: ");
-        String password = scanner.nextLine();
 
-        for (User user : users) {
-            if (user.getUsername().equalsIgnoreCase(username) && user.getPassword().equals(password)) {
-                currentUser = user;
-                printSuccess("Login successful! Welcome back, " + currentUser.getUsername() + ".");
-                return;
-            }
-        }
-        printError("Access denied. Invalid credentials.");
-    }
-
-    private static void signup() {
-        printHeader("SIGN UP");
-        System.out.print(" 👤 Username: ");
-        String username = scanner.nextLine().trim();
-        if (username.isEmpty()) {
-            printError("Username cannot be empty.");
-            return;
-        }
-        for (User u : users) {
-            if (u.getUsername().equalsIgnoreCase(username)) {
-                printError("Username already exists.");
-                return;
-            }
-        }
-        System.out.print(" 🔑 Password: ");
-        String password = scanner.nextLine();
-        System.out.print(" ✉️ Email: ");
-        String email = scanner.nextLine().trim();
-        System.out.print(" 📞 Contact Number: ");
-        String phone = scanner.nextLine().trim();
-        System.out.print(" 🏠 Address: ");
-        String address = scanner.nextLine().trim();
-
-        int newId = users.isEmpty() ? 1 : users.stream().mapToInt(User::getUserID).max().orElse(0) + 1;
-        User newUser = new User(newId, username, password, email, phone, address);
-        users.add(newUser);
-        saveUser(newUser);
-        printSuccess("Account created successfully.");
-    }
-
-    private static void loadUsers() {
-        try (Scanner fileScanner = new Scanner(new File(USERS_FILE))) {
-            while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine();
-                String[] parts = line.split("\\|");
-                if (parts.length == 6) {
-                    users.add(new User(
-                        Integer.parseInt(parts[0]),
-                        parts[1],
-                        parts[2],
-                        parts[3],
-                        parts[4],
-                        parts[5]
-                    ));
-                }
-            }
-        } catch (FileNotFoundException e) {
-            // Safe fallback
-        }
-    }
-
-    private static void saveUser(User user) {
-        try (PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(USERS_FILE, true)))) {
-            out.println(String.format("%d|%s|%s|%s|%s|%s",
-                user.getUserID(),
-                user.getUsername(),
-                user.getPassword(),
-                user.getEmail(),
-                user.getPhone(),
-                user.getAddress()
-            ));
-        } catch (IOException e) {
-            printError("Storage Write Fault: " + e.getMessage());
-        }
-    }
 
     private static void viewRestaurants() {
         printHeader("RESTAURANTS DIRECTORY");
-        System.out.printf("  %-4s  %-16s  %-16s %-10s%n", "ID", "Brand Name", "Hub Location", "Rating");
+        restaurantManager.displayRestaurant();
         printDivider();
-        for (int i = 0; i < restaurants.size(); i++) {
-            Restaurant r = restaurants.get(i);
-            System.out.printf("  [%d]  %-16s  %-16s ★ %.1f%n",
-                i + 1, r.getName(), r.getLocation(), r.getRating());
-        }
-        printDivider();
-        Integer choice = readOptionalInt(" ➜ Choose restaurant (0 to go back): ", 0, restaurants.size());
+        Integer choice = readOptionalInt(" ➜ Choose restaurant ID (0 to go back): ", 0, 100);
         if (choice == null || choice == 0) return;
 
-        Restaurant selected = restaurants.get(choice - 1);
+        Restaurant selected = restaurantManager.searchRestaurant(choice);
+        if (selected == null) {
+            printError("Invalid restaurant ID.");
+            return;
+        }
         printHeader("CATALOGUE — " + selected.getName().toUpperCase());
         for (FoodItem item : selected.getMenu()) {
             System.out.println("  • " + item);
@@ -314,7 +234,11 @@ public class App {
         Integer resChoice = readOptionalInt(" ➜ Target Restaurant ID (0 to Cancel): ", 0, restaurants.size());
         if (resChoice == null || resChoice == 0) return;
 
-        Restaurant selected = restaurants.get(resChoice - 1);
+        Restaurant selected = restaurantManager.searchRestaurant(resChoice);
+        if (selected == null) {
+            printError("Invalid restaurant ID.");
+            return;
+        }
         orderService.createNewOrder(currentUser, selected);
 
         List<FoodItem> menu = selected.getMenu();
@@ -382,13 +306,7 @@ public class App {
             printError("Your cart is empty.");
             return;
         }
-        Restaurant r = null;
-        for (Restaurant x : restaurants) {
-            if (x.getRestaurantID() == rid) {
-                r = x;
-                break;
-            }
-        }
+        Restaurant r = restaurantManager.searchRestaurant(rid);
         if (r == null) {
             printError("Restaurant not found.");
             return;
@@ -425,7 +343,7 @@ public class App {
 
     // --- High-Fidelity UI Helpers ---
 
-    private static void printHeader(String title) {
+    public static void printHeader(String title) {
         System.out.println();
         int width = 50;
         String lineBorder = "═".repeat(width);
@@ -440,19 +358,19 @@ public class App {
         System.out.println();
     }
 
-    private static void printDivider() {
+    public static void printDivider() {
         System.out.println("  ----------------------------------------");
     }
 
-    private static void printError(String msg) {
+    public static void printError(String msg) {
         System.out.println("\n  ❌ Error: " + msg + "\n");
     }
 
-    private static void printSuccess(String msg) {
+    public static void printSuccess(String msg) {
         System.out.println("\n  ✔ Success: " + msg + "\n");
     }
 
-    private static void printStatus(String msg) {
+    public static void printStatus(String msg) {
         System.out.println("  ⏳ " + msg);
     }
 
