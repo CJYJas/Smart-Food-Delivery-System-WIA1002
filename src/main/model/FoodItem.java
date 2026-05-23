@@ -58,6 +58,6 @@ public class FoodItem {
 
     @Override
     public String toString() {
-        return String.format("[%d] %-15s | RM%.2f | (%s)", itemID, name, price, category);
+        return String.format("[%d] %-16s | RM%6.2f | (%s)", itemID, name, price, category);
     }
 }

@@ -29,6 +29,5 @@ public class DeliveryManager {
         // remove the used rider (head of the priority queue)
         Rider assignedRider = availableRider.poll();
         System.out.println("Assigned: " + assignedRider);
-
     }
 }
