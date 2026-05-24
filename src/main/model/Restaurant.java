@@ -52,7 +52,7 @@ public class Restaurant {
 
     @Override
     public String toString() {
-        return String.format("  [%s]  %-16s  %-16s ★ %.1f", restaurantID, name, location, rating);
+        return String.format("  [%s]  %-16s  %-16s  %.1f", restaurantID, name, location, rating);
     }
 
     public void addFoodItem(FoodItem item) {
