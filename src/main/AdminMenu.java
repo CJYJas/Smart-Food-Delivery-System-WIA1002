@@ -1,7 +1,6 @@
 package main;
 
 import java.util.List;
-
 import main.model.*;
 
 public class AdminMenu {
@@ -321,20 +320,6 @@ public class AdminMenu {
         } catch (NumberFormatException e) {
             App.printError("Invalid input. Menu item was not updated.");
         }
-    }
-
-    private static void searchFood() {
-        App.printHeader("SEARCH FOOD ITEM (Trie)");
-        System.out.print("  Enter food name: ");
-        String query = App.scanner.nextLine().trim();
-        FoodItem result = App.searchService.findFood(query);
-        if (result != null) {
-            App.printSuccess("Found:");
-            System.out.println("  " + result);
-        } else {
-            App.printError("'" + query + "' not found in menu.");
-        }
-        
     }
 
     private static void shortestPath() {

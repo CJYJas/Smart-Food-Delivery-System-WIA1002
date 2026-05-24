@@ -2,7 +2,6 @@ package main;
 
 import java.io.*;
 import java.util.*;
-
 import main.model.*;
 import main.navigation.CityGraph;
 import main.order.OrderService;
@@ -195,6 +194,4 @@ public class App {
             printError("Could not load roads: " + e.getMessage());
         }
     }
-
-    
 }
