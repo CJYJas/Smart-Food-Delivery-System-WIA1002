@@ -73,7 +73,7 @@ public class OrderService {
         }
         int n = 1;
         for (OrderItem oi : cartStack.getOrderedItems()) {
-            System.out.printf("  %d. %10s   x %d    RM %.2f%n",
+            System.out.printf("  %d. %18s   x %d    RM %.2f%n",
                 n++, oi.getFoodItem().getName(), oi.getQuantity(), oi.getTotalPrice());
         }
     }

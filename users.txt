@@ -1,9 +1,8 @@
 1|jasmine|123456|jasmine@example.com|011-1111111|jasmine home
-2|shaoern|060606|shaoern0606@gmail.com|0123456789|Perai
-3|a|a|a@gmail.com|0123456789|shaoern house
-4|ahmad|password|ahmad@example.com|012-3456789|123 Jalan Bukit Bintang, KL
-5|siti|password|siti@example.com|013-9876543|45 Jalan Ampang, KL
-6|raj|password|raj@example.com|014-5551234|78 Jalan Petaling, KL
-7|tanwei|password|tanwei@example.com|016-7778899|22 Jalan Sultan Ismail, KL
-8|nurulizzah|password|nurulizzah@example.com|017-2223344|99 Jalan Tun Razak, KL
-9|peiying|py|py@example.com|012-3456788|KL
+2|shaoern|060606|shaoern@gmail.com|0123456789|Perai
+3|ahmad|password|ahmad@example.com|012-3456789|123 Jalan Bukit Bintang, KL
+4|siti|password|siti@example.com|013-9876543|45 Jalan Ampang, KL
+5|raj|password|raj@example.com|014-5551234|78 Jalan Petaling, KL
+6|tanwei|password|tanwei@example.com|016-7778899|22 Jalan Sultan Ismail, KL
+7|nurulizzah|password|izzah@example.com|017-2223344|99 Jalan Tun Razak, KL
+

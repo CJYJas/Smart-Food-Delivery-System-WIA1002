@@ -34,7 +34,7 @@ public class RestaurantManager {
     }
 
     public void displayRestaurant() {
-        System.out.printf("  %2s   %-16s  %-16s ★ %s%n", "ID", "Brand Name", "Hub Location", "Rating");
+        System.out.printf("  %-5s   %-16s  %-16s ★ %s%n", "ID", "Brand Name", "Hub Location", "Rating");
         System.out.println("-".repeat(50));
         for (Restaurant restaurant : restaurants) {
             System.out.println(restaurant.toString());

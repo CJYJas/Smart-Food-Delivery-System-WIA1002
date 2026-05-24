@@ -22,8 +22,8 @@ public class UserMenu {
             System.out.println("  4. Search Restaurant");
             System.out.println("  5. Start New Order");
             System.out.println("  6. View Cart");
-            System.out.println("  7. Undo Last Cart Item (Stack)");
-            System.out.println("  8. Confirm Order (Place Order)");
+            System.out.println("  7. Undo Last Cart Item");
+            System.out.println("  8. Place Order");
             System.out.println("  9. Find Delivery Route");
             System.out.println("  10. View Order History");
             System.out.println("  11. View My Profile");
@@ -167,7 +167,7 @@ public class UserMenu {
                 }
                 App.printDivider();
                 System.out.println("  1. Add item to cart");
-                System.out.println("  0 Back");
+                System.out.println("  0. Back");
                 App.printDivider();
                 System.out.print("  Select option: ");
                 String ch = App.scanner.nextLine().trim();

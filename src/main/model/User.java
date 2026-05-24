@@ -72,7 +72,7 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("[ID: %d] %-15s | %-20s | %-15s | %-30s", userID, username, email, phone, address);
+        return String.format("[ID: %d] %-10s | %-20s | %-15s | %-30s", userID, username, email, phone, address);
     }
 
     public static User login(Scanner scanner, UserManager userManager) {

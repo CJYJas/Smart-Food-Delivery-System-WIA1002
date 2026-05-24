@@ -23,10 +23,10 @@ public class AdminMenu {
             App.printHeader("ADMIN DASHBOARD");
             System.out.println("  1. Manage Users");
             System.out.println("  2. Manage Restaurants");
-            System.out.println("  3. View City Map (Graph)");
-            System.out.println("  4. Find Shortest Path (Dijkstra)");
+            System.out.println("  3. View City Map");
+            System.out.println("  4. Find Shortest Path");
             System.out.println("  5. Manage Riders & Delivery");
-            System.out.println("  6. Process Next Order (Queue)");
+            System.out.println("  6. Process Next Order");
             System.out.println("  7. View Pending Order Count");
             System.out.println("  0. Logout");
             App.printDivider();
@@ -37,7 +37,9 @@ public class AdminMenu {
                 case "1" -> manageUsers();
                 case "2" -> manageRestaurants();
                 case "3" -> {
-                    App.printHeader("CITY MAP (Adjacency List)");
+                    System.out.println("=".repeat(100));
+                    System.out.println("CITY MAP (Adjacency List)");
+                    System.out.println("=".repeat(100));
                     App.cityGraph.printGraph();
                 }
                 case "4" -> shortestPath();
@@ -73,13 +75,16 @@ public class AdminMenu {
 
             switch (ch) {
                 case "1" -> {
-                    App.printHeader("ALL USERS");
+                    System.out.println();
+                    System.out.println("=".repeat(100));
+                    System.out.println("ALL USERS");
+                    System.out.println("=".repeat(100));
                     if (App.users.isEmpty()) {
                         System.out.println("  No users registered.");
                     } else {
-                        System.out.printf("  %-4s %-15s %-20s %-15s %-30s%n",
+                        System.out.printf("  %-6s %-13s %-22s %-15s %-30s%n",
                                 "ID", "Username", "Email", "Phone", "Address");
-                        App.printDivider();
+                        System.out.println("-".repeat(100));
                         for (User u : App.users) {
                             System.out.println(u);
                         }
