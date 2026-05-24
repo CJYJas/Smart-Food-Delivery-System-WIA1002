@@ -103,13 +103,13 @@ public class User {
             App.printError("Username already exists.");
             return;
         }
-        System.out.print(" 🔑 Password: ");
+        System.out.print("  Password: ");
         String password = scanner.nextLine();
-        System.out.print(" ✉️ Email: ");
+        System.out.print("  Email: ");
         String email = scanner.nextLine().trim();
-        System.out.print(" 📞 Contact Number: ");
+        System.out.print("  Contact Number: ");
         String phone = scanner.nextLine().trim();
-        System.out.print(" 🏠 Address: ");
+        System.out.print("  Address: ");
         String address = scanner.nextLine().trim();
 
         int newId = users.isEmpty() ? 1 : users.stream().mapToInt(User::getUserID).max().orElse(0) + 1;

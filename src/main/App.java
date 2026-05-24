@@ -13,23 +13,23 @@ import main.user.UserManager;
 
 public class App {
 
-    public static final String USERS_FILE       = "users.txt";
-    private static final String RESTAURANTS_FILE = "restaurants.csv";
-    private static final String MENU_FILE        = "menu.csv";
-    private static final String LOCATIONS_FILE   = "locations.csv";
-    private static final String ROADS_FILE       = "roads.csv";
-    private static final String RIDERS_FILE      = "riders.csv";
+    public static final String USERS_FILE = "users.txt";
+    static final String RESTAURANTS_FILE = "restaurants.csv";
+    static final String MENU_FILE = "menu.csv";
+    static final String LOCATIONS_FILE = "locations.csv";
+    static final String ROADS_FILE = "roads.csv";
+    static final String RIDERS_FILE = "riders.csv";
 
     public static final int LINE_WIDTH = 50;
 
-    static final List<User>       users       = new ArrayList<>();
+    static final List<User> users = new ArrayList<>();
     static final List<Restaurant> restaurants = new ArrayList<>();
-    static final List<FoodItem>   allFood     = new ArrayList<>();
+    static final List<FoodItem> allFood = new ArrayList<>();
 
-    static final UserManager       userManager       = new UserManager();
+    static final UserManager userManager = new UserManager();
     static final RestaurantManager restaurantManager = new RestaurantManager();
-    static final OrderService      orderService      = new OrderService();
-    static final SearchService     searchService     = new SearchService();
+    static final OrderService orderService = new OrderService();
+    static final SearchService searchService = new SearchService();
     static final CityGraph<String, Double> cityGraph = new CityGraph<>();
 
     static DeliveryManager deliveryManager;
@@ -64,7 +64,7 @@ public class App {
             printHeader("SMART FOOD DELIVERY SYSTEM");
             System.out.println("  1. Admin Login");
             System.out.println("  2. User Login");
-            System.out.println("  3. Sign Up");
+            System.out.println("  3. User Sign Up");
             System.out.println("  0. Exit");
             printDivider();
             System.out.print("  Select option: ");
@@ -99,15 +99,42 @@ public class App {
         System.out.println();
     }
 
+    private static void loadRiders() {
+        try (Scanner fs = new Scanner(new File(RIDERS_FILE))) {
+            while (fs.hasNextLine()) {
+                String line = fs.nextLine().trim();
+                if (line.isEmpty()) continue;
+                String[] p = line.split("\\s*,\\s*");
+                try {
+                    if (p.length >= 4) {
+                        String id = p[0].trim();
+                        String name = p[1].trim();
+                        int est = Integer.parseInt(p[2].trim());
+                        double dist = Double.parseDouble(p[3].trim());
+                        deliveryManager.addRiderFromCsv(id, name, est, dist);
+                    } else if (p.length >= 2) {
+                        String name = p[0].trim();
+                        double dist = Double.parseDouble(p[1].trim());
+                        deliveryManager.addRider(name, dist);
+                    }
+                } catch (NumberFormatException e) {
+                    // skip malformed row
+                }
+            }
+        } catch (FileNotFoundException e) {
+            printError("Could not load riders: " + e.getMessage());
+        }
+    }
+
     private static void loadRestaurants() {
         try (Scanner fs = new Scanner(new File(RESTAURANTS_FILE))) {
             while (fs.hasNextLine()) {
                 String line = fs.nextLine().trim();
                 if (line.isEmpty()) continue;
-                String[] p = line.split(",");
+                String[] p = line.split("\\s*,\\s*");
                 if (p.length >= 4) {
                     Restaurant r = new Restaurant(
-                        Integer.parseInt(p[0].trim()), p[1].trim(),
+                        p[0].trim(), p[1].trim(),
                         p[2].trim(), Double.parseDouble(p[3].trim()));
                     restaurants.add(r);
                     restaurantManager.addRestaurant(r);
@@ -123,16 +150,16 @@ public class App {
             while (fs.hasNextLine()) {
                 String line = fs.nextLine().trim();
                 if (line.isEmpty()) continue;
-                String[] p = line.split(",");
+                String[] p = line.split("\\s*,\\s*");
                 if (p.length >= 5) {
                     FoodItem item = new FoodItem(
                         Integer.parseInt(p[0].trim()), p[1].trim(),
                         Double.parseDouble(p[2].trim()), p[3].trim(),
-                        Integer.parseInt(p[4].trim()));
+                        p[4].trim());
                     allFood.add(item);
                     searchService.addFoodToMenu(item);
                     for (Restaurant r : restaurants) {
-                        if (r.getRestaurantID() == item.getRestaurantID()) {
+                        if (r.getRestaurantID().equals(item.getRestaurantID())) {
                             r.addFoodItem(item);
                             break;
                         }
@@ -160,7 +187,7 @@ public class App {
             while (fs.hasNextLine()) {
                 String line = fs.nextLine().trim();
                 if (line.isEmpty()) continue;
-                String[] p = line.split(",");
+                String[] p = line.split("\\s*,\\s*");
                 if (p.length >= 3)
                     cityGraph.addRoad(p[0].trim(), p[1].trim(), Double.parseDouble(p[2].trim()));
             }
@@ -169,17 +196,5 @@ public class App {
         }
     }
 
-    private static void loadRiders() {
-        try (Scanner fs = new Scanner(new File(RIDERS_FILE))) {
-            while (fs.hasNextLine()) {
-                String line = fs.nextLine().trim();
-                if (line.isEmpty()) continue;
-                String[] p = line.split(",");
-                if (p.length >= 2)
-                    deliveryManager.addRider(p[0].trim(), Double.parseDouble(p[1].trim()));
-            }
-        } catch (FileNotFoundException e) {
-            printError("Could not load riders: " + e.getMessage());
-        }
-    }
+    
 }

@@ -19,12 +19,14 @@ public class UserMenu {
             System.out.println("  1. Browse Restaurants");
             System.out.println("  2. Browse Full Menu (sorted A-Z)");
             System.out.println("  3. Search Food by Name");
-            System.out.println("  4. Start New Order");
-            System.out.println("  5. View Cart");
-            System.out.println("  6. Undo Last Cart Item (Stack)");
-            System.out.println("  7. Confirm Order (Place Order)");
-            System.out.println("  8. Find Delivery Route");
-            System.out.println("  9. View My Profile");
+            System.out.println("  4. Search Restaurant");
+            System.out.println("  5. Start New Order");
+            System.out.println("  6. View Cart");
+            System.out.println("  7. Undo Last Cart Item (Stack)");
+            System.out.println("  8. Confirm Order (Place Order)");
+            System.out.println("  9. Find Delivery Route");
+            System.out.println("  10. View Order History");
+            System.out.println("  11. View My Profile");
             System.out.println("  0. Logout");
             App.printDivider();
             System.out.print("  Select option: ");
@@ -38,8 +40,9 @@ public class UserMenu {
                     
                 }
                 case "3" -> searchFood();
-                case "4" -> startOrder(currentUser);
-                case "5" -> {
+                case "4" -> searchRestaurant();
+                case "5" -> startOrder(currentUser);
+                case "6" -> {
                     App.printHeader("YOUR CART");
                     App.orderService.printCartOverview(App.restaurants);
                     if (!App.orderService.isCartEmpty()) {
@@ -47,14 +50,18 @@ public class UserMenu {
                     }
                     
                 }
-                case "6" -> {
+                case "7" -> {
                     App.printHeader("UNDO LAST ITEM");
                     App.orderService.undoLastItem();
                     
                 }
-                case "7" -> confirmOrder(currentUser);
-                case "8" -> deliveryRoute(currentUser);
-                case "9" -> {
+                case "8" -> confirmOrder(currentUser);
+                case "9" -> deliveryRoute(currentUser);
+                case "10" -> {
+                    App.printHeader("ORDER HISTORY");
+                    App.orderService.printOrderHistory(currentUser);
+                }
+                case "11" -> {
                     App.printHeader("MY PROFILE");
                     System.out.println("  ID:       " + currentUser.getUserID());
                     System.out.println("  Username: " + currentUser.getUsername());
@@ -78,18 +85,18 @@ public class UserMenu {
         App.printDivider();
         System.out.print("  Enter Restaurant ID to view menu (or 0 to go back): ");
         try {
-            int id = Integer.parseInt(App.scanner.nextLine().trim());
-            if (id == 0) return;
+            String id = App.scanner.nextLine().trim();
+            if (id.equals("0")) return;
             Restaurant r = App.restaurantManager.searchRestaurant(id);
             if (r != null) {
                 App.printHeader("MENU - " + r.getName() + " (" + r.getLocation() + ")");
-                if (r.getMenu().isEmpty()) {
-                    System.out.println("  No items available.");
-                } else {
-                    for (FoodItem fi : r.getMenu()) {
-                        System.out.println("  " + fi);
+                    if (r.getMenu().isEmpty()) {
+                        System.out.println("  No items available.");
+                    } else {
+                        for (FoodItem fi : r.getMenu()) {
+                            System.out.println("  " + fi);
+                        }
                     }
-                }
             } else {
                 App.printError("Restaurant not found.");
             }
@@ -111,19 +118,39 @@ public class UserMenu {
         }
     }
 
+    private static void searchRestaurant() {
+        App.printHeader("SEARCH RESTAURANT");
+        System.out.print("  Enter partial or full match query: ");
+        String query = App.scanner.nextLine().trim().toLowerCase();
+        if (query.isEmpty()) {
+            App.printError("Search token cannot be empty.");
+            return;
+        }
+        boolean found = false;
+        System.out.println();
+        for (Restaurant r : App.restaurants) {
+            if (r.getName().toLowerCase().contains(query)) {
+                System.out.println("  " + r.getName() + " (" + r.getLocation() + ") - Rating: " + r.getRating());
+                found = true;
+            }
+        }
+        if (!found) {
+            App.printError("No restaurant found.");
+        }
+    }
+
     private static void startOrder(User currentUser) {
         App.printHeader("NEW ORDER");
         App.restaurantManager.displayRestaurant();
         App.printDivider();
         System.out.print("  Select Restaurant ID: ");
         try {
-            int rid = Integer.parseInt(App.scanner.nextLine().trim());
+            String rid = App.scanner.nextLine().trim();
             Restaurant r = App.restaurantManager.searchRestaurant(rid);
             if (r == null) {
                 App.printError("Restaurant not found.");
                 return;
             }
-
             App.orderService.createNewOrder(currentUser, r);
 
             boolean ordering = true;
@@ -140,9 +167,7 @@ public class UserMenu {
                 }
                 App.printDivider();
                 System.out.println("  1. Add item to cart");
-                System.out.println("  2. Undo last item (Stack pop)");
-                System.out.println("  3. View cart");
-                System.out.println("  4. Done adding items");
+                System.out.println("  0 Back");
                 App.printDivider();
                 System.out.print("  Select option: ");
                 String ch = App.scanner.nextLine().trim();
@@ -175,15 +200,7 @@ public class UserMenu {
                             App.printError("Invalid input.");
                         }
                     }
-                    case "2" -> App.orderService.undoLastItem();
-                    case "3" -> {
-                        App.printHeader("CURRENT CART");
-                        App.orderService.printCartOverview(App.restaurants);
-                        if (!App.orderService.isCartEmpty()) {
-                            System.out.printf("  %-25s RM %.2f%n", "Total:", App.orderService.getCartTotal());
-                        }
-                    }
-                    case "4" -> ordering = false;
+                    case "0" -> ordering = false;
                     default -> App.printError("Invalid option.");
                 }
             }
@@ -197,7 +214,6 @@ public class UserMenu {
         App.printHeader("CONFIRM ORDER");
         if (App.orderService.isCartEmpty()) {
             App.printError("Your cart is empty. Add items first.");
-            
             return;
         }
         App.orderService.printCartOverview(App.restaurants);
@@ -206,8 +222,12 @@ public class UserMenu {
         System.out.print("  Confirm order? (y/n): ");
         String confirm = App.scanner.nextLine().trim();
         if (confirm.equalsIgnoreCase("y")) {
-            int rid = App.orderService.getCartRestaurantId();
+            String rid = App.orderService.getCartRestaurantId();
             Restaurant r = App.restaurantManager.searchRestaurant(rid);
+            if (r == null) {
+                App.printError("Restaurant not found for cart items.");
+                return;
+            }
             App.orderService.confirmOrder(App.nextOrderId++, currentUser, r);
             App.printSuccess("Order placed and added to processing queue!");
         } else {
@@ -224,7 +244,6 @@ public class UserMenu {
         for (Restaurant r : App.restaurants) {
             System.out.println("    - " + r.getLocation());
         }
-        System.out.println("    - User Home");
         App.printDivider();
         System.out.print("  Enter restaurant location (from): ");
         String from = App.scanner.nextLine().trim();
@@ -233,12 +252,10 @@ public class UserMenu {
 
         if (!App.cityGraph.hasLocation(from)) {
             App.printError("'" + from + "' is not on the city map.");
-            
             return;
         }
         if (!App.cityGraph.hasLocation(to)) {
             App.printError("'" + to + "' is not on the city map.");
-            
             return;
         }
 
@@ -253,6 +270,5 @@ public class UserMenu {
             System.out.println("  Assigning best available rider...");
             App.deliveryManager.assignBestRider();
         }
-        
     }
 }

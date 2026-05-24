@@ -1,5 +1,6 @@
 package main.order;
 
+import java.util.ArrayList;
 import java.util.List;
 import main.model.Order;
 import main.model.OrderItem;
@@ -9,20 +10,22 @@ import main.model.User;
 public class OrderService {
     private OrderStack cartStack;
     private final OrderQueue processingQueue;
+    private final List<Order> orderHistory;
 
     public OrderService() {
         this.cartStack = new OrderStack(); 
         this.processingQueue = new OrderQueue();
+        this.orderHistory = new ArrayList<>();
     }
 
     public void createNewOrder(User user, Restaurant restaurant) {
         cartStack = new OrderStack();
     }
 
-    /** Restaurant id from the first line in the cart, or -1 if the cart is empty. */
-    public int getCartRestaurantId() {
+    /** Restaurant id from the first line in the cart, or null if the cart is empty. */
+    public String getCartRestaurantId() {
         if (cartStack.isEmpty()) {
-            return -1;
+            return null;
         }
         return cartStack.getOrderedItems().get(0).getFoodItem().getRestaurantID();
     }
@@ -52,6 +55,7 @@ public class OrderService {
             newOrder.addItem(cartStack.pop());
         }
         processingQueue.enqueue(newOrder);
+        orderHistory.add(newOrder);
         System.out.println("  Order #" + orderId + " placed successfully!");
     }
 
@@ -60,9 +64,9 @@ public class OrderService {
             System.out.println("  Cart is empty.");
             return;
         }
-        int rid = getCartRestaurantId();
+        String rid = getCartRestaurantId();
         for (Restaurant r : restaurants) {
-            if (r.getRestaurantID() == rid) {
+            if (r.getRestaurantID().equals(rid)) {
                 System.out.println("  Restaurant: " + r.getName());
                 break;
             }
@@ -87,16 +91,46 @@ public class OrderService {
     }
 
     public void processNextOrder() {
-        if (!processingQueue.isEmpty()) {
-            Order nextOrder = processingQueue.dequeue(); 
-            nextOrder.setStatus("  Processing");
-            System.out.println("  Now processing " + nextOrder.toString());
-        } else {
+        if (processingQueue.isEmpty()) {
             System.out.println("  No pending orders in the queue.");
+            return;
         }
+
+        Order nextOrder = processingQueue.dequeue();
+        nextOrder.setStatus("Processing");
+        System.out.println("  Now processing " + nextOrder.toString());
+        System.out.println("  Pending orders remaining: " + getPendingCount());
     }
 
     public int getPendingCount() {
         return processingQueue.size();
+    }
+
+    public void printOrderHistory(User user) {
+        List<Order> userOrders = new ArrayList<>();
+        for (Order order : orderHistory) {
+            if (order.getUser().getUserID() == user.getUserID()) {
+                userOrders.add(order);
+            }
+        }
+
+        if (userOrders.isEmpty()) {
+            System.out.println("  You have no order history.");
+            return;
+        }
+
+        for (int i = 0; i < userOrders.size(); i++) {
+            Order order = userOrders.get(i);
+            System.out.println();
+            System.out.println("  Order #" + order.getOrderId());
+            System.out.println("  Restaurant: " + order.getRestaurant().getName());
+            System.out.println("  Status: " + order.getStatus());
+            System.out.println("  Total: RM " + String.format("%.2f", order.getTotalPrice()));
+            System.out.println("  Items:");
+            for (OrderItem item : order.getItems()) {
+                System.out.printf("    - %s x %d (RM %.2f)%n", item.getFoodItem().getName(), 
+                    item.getQuantity(), item.getTotalPrice());
+            }
+        }
     }
 }

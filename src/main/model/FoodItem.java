@@ -6,9 +6,9 @@ public class FoodItem {
     private String name;
     private double price;
     private String category;
-    private int restaurantID;
+    private String restaurantID;
 
-    public FoodItem(int itemID, String name, double price, String category, int restaurantID) {
+    public FoodItem(int itemID, String name, double price, String category, String restaurantID) {
         this.itemID = itemID;
         this.name = name;
         this.price = price;
@@ -32,7 +32,7 @@ public class FoodItem {
         return category;
     }
 
-    public int getRestaurantID() {
+    public String getRestaurantID() {
         return restaurantID;
     }
 
@@ -52,7 +52,7 @@ public class FoodItem {
         this.category = category;
     }
 
-    public void setRestaurantID(int restaurantID) {
+    public void setRestaurantID(String restaurantID) {
         this.restaurantID = restaurantID;
     }
 

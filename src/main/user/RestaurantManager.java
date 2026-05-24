@@ -20,15 +20,16 @@ public class RestaurantManager {
         System.out.println("Restaurant added: " + restaurant.getName());
     }
 
-    public boolean removeRestaurant(int restaurantID) {
+    public boolean removeRestaurant(String restaurantID) {
         for (int i = 0; i < restaurants.size(); i++) {
             Restaurant restaurant = restaurants.get(i);
-            if (restaurant.getRestaurantID() == restaurantID) {
+            if (restaurant.getRestaurantID().equals(restaurantID)) {
                 restaurants.remove(i);
                 System.out.println("Restaurant removed: " + restaurant.getName());
                 return true;
             }
-        }        System.out.println("Restaurant with ID " + restaurantID + " not found.");
+        }
+        System.out.println("Restaurant with ID " + restaurantID + " not found.");
         return false;
     }
 
@@ -40,10 +41,10 @@ public class RestaurantManager {
         }
     }
 
-    public Restaurant searchRestaurant(int restaurantID) {
+    public Restaurant searchRestaurant(String restaurantID) {
         for (int i = 0; i < restaurants.size(); i++) {
             Restaurant restaurant = restaurants.get(i);
-            if (restaurant.getRestaurantID() == restaurantID) {
+            if (restaurant.getRestaurantID().equals(restaurantID)) {
                 return restaurant;
             }
         }

@@ -1,15 +1,20 @@
-101,Big Mac,15.50,Burger,1
-102,Fries,6.00,Side,1
-103,McChicken,12.00,Burger,1
-201,Zinger Burger,14.50,Burger,2
-202,2-pc Combo,18.00,Chicken,2
-203,Whipped Potato,5.50,Side,2
-301,Pepperoni Pizza,25.00,Pizza,3
-302,Garlic Bread,8.00,Side,3
-303,Aglio Olio,16.50,Pasta,3
-401,Italian BMT,14.90,Sandwich,4
-402,Roasted Chicken,13.50,Sandwich,4
-403,Chocolate Cookie,2.50,Dessert,4
-501,Salmon Sushi,6.00,Sushi,5
-502,Ebi Tempura,12.00,Side,5
-503,Chicken Don,15.00,Main,5
+101,Big Mac,15.50,Burger,R001
+102,Fries,6.00,Side,R001
+103,McChicken,12.00,Burger,R001
+201,Zinger Burger,14.50,Burger,R002
+202,Chicken Combo,18.00,Chicken,R002
+203,Whipped Potato,5.50,Side,R002
+301,Nasi Lemak Biasa,6.00,Rice,R003
+302,Roti Canai,2.00,Bread,R003
+303,Teh Tarik Kaw,2.80,Drink,R003
+304,Mee Goreng,7.50,Noodle,R003
+401,Nasi Kandar,12.50,Rice,R004
+402,Murtabak Daging,9.00,Bread,R004
+403,Teh O Ice Limau,2.20,Drink,R004
+501,Char Hor Fun,8.50,Noodle,R005
+502,Dim Sum Set,15.00,Snack,R005
+503,Char Kuey Teow,8.00,Noodle,R005
+504,Wantan Mee,7.50,Noodle,R005
+601,Sushi Platter,35.00,Japanese,R006
+602,Sushi Set,25.00,Japanese,R006
+603,Ramen,18.00,Japanese,R006
