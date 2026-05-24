@@ -70,14 +70,6 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
         return false;
     }
 
-    public LocationNode<T, N> getNeigbours(T location) {
-        LocationNode<T, N> node = findLocation(location);
-        if (node != null) {
-            return node;
-        }
-        return null;
-    }
-
     private final Map<LocationNode<T, N>, LocationNode<T, N>> pathTracker = new HashMap<>();
 
     public double getShortestDistance(T from, T to) {

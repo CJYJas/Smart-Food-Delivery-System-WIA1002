@@ -1,16 +1,32 @@
-User Home,McD,5.0
-McD,User Home,5.0
-McD,Central Mall,3.0
-Central Mall,McD,3.0
-User Home,KFC,8.0
-KFC,User Home,8.0
-KFC,Pizza Hut,2.0
-Pizza Hut,KFC,2.0
-Pizza Hut,User Home,6.0
-User Home,Pizza Hut,6.0
-Subway,Central Mall,2.5
-Central Mall,Subway,2.5
-Sushi King,Central Mall,4.0
-Central Mall,Sushi King,4.0
-Subway,User Home,7.5
-User Home,Subway,7.5
+McD Street,Central Mall,3.0
+Central Mall,McD Street,3.0
+McD Street,KLCC Area,4.2
+KLCC Area,McD Street,4.2
+McD Street,Jalan Alor KL,3.5
+Jalan Alor KL,McD Street,3.5
+KFC Avenue,Central Mall,4.0
+Central Mall,KFC Avenue,4.0
+KFC Avenue,KLCC Area,4.5
+KLCC Area,KFC Avenue,4.5
+KFC Avenue,Jalan Alor KL,3.8
+Jalan Alor KL,KFC Avenue,3.8
+Jalan Alor KL,Bukit Bintang Area,1.5
+Bukit Bintang Area,Jalan Alor KL,1.5
+Jalan Alor KL,KLCC Area,2.8
+KLCC Area,Jalan Alor KL,2.8
+Jalan Ampang,KLCC Area,1.0
+KLCC Area,Jalan Ampang,1.0
+Jalan Ampang,Ampang Area,3.5
+Ampang Area,Jalan Ampang,3.5
+Pavilion KL,Bukit Bintang Area,0.8
+Bukit Bintang Area,Pavilion KL,0.8
+Pavilion KL,Mid Valley,4.5
+Mid Valley,Pavilion KL,4.5
+KLCC Area,Ampang Area,3.0
+Ampang Area,KLCC Area,3.0
+KLCC Area,Bukit Bintang Area,2.2
+Bukit Bintang Area,KLCC Area,2.2
+Bangsar Area,Mid Valley,3.2
+Mid Valley,Bangsar Area,3.2
+Mid Valley,Petaling Jaya Area,4.0
+Petaling Jaya Area,Mid Valley,4.0

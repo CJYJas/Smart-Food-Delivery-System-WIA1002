@@ -1,5 +1,6 @@
 package main.order;
 
+import java.util.ArrayList;
 import java.util.List;
 import main.model.Order;
 import main.model.OrderItem;
@@ -9,42 +10,43 @@ import main.model.User;
 public class OrderService {
     private OrderStack cartStack;
     private final OrderQueue processingQueue;
+    private final List<Order> orderHistory;
 
     public OrderService() {
         this.cartStack = new OrderStack(); 
         this.processingQueue = new OrderQueue();
+        this.orderHistory = new ArrayList<>();
     }
 
     public void createNewOrder(User user, Restaurant restaurant) {
         cartStack = new OrderStack();
-        System.out.println("Ordering from " + restaurant.getName() + ". Cart cleared — add items below.");
     }
 
-    /** Restaurant id from the first line in the cart, or -1 if the cart is empty. */
-    public int getCartRestaurantId() {
+    /** Restaurant id from the first line in the cart, or null if the cart is empty. */
+    public String getCartRestaurantId() {
         if (cartStack.isEmpty()) {
-            return -1;
+            return null;
         }
         return cartStack.getOrderedItems().get(0).getFoodItem().getRestaurantID();
     }
 
     public void addItemToCart(OrderItem item) {
         cartStack.push(item);
-        System.out.println("Item added: " + item.getFoodItem().getName());
+        System.out.println("  Item added: " + item.getFoodItem().getName());
     }
 
     public void undoLastItem() {
         if (!cartStack.isEmpty()) {
             OrderItem removed = cartStack.pop();
-            System.out.println("Successfully undo " + removed.getFoodItem().getName());
+            System.out.println("  Successfully undo " + removed.getFoodItem().getName() + ".");
         } else {
-            System.out.println("Cart is empty, nothing to undo.");
+            System.out.println("  Cart is empty, nothing to undo.");
         }
     }
 
     public void confirmOrder(int orderId, User user, Restaurant restaurant) {
         if (cartStack.isEmpty()) {
-            System.out.println("Cannot place order: Cart is empty.");
+            System.out.println("  Cannot place order: Cart is empty.");
             return;
         }
 
@@ -53,24 +55,25 @@ public class OrderService {
             newOrder.addItem(cartStack.pop());
         }
         processingQueue.enqueue(newOrder);
-        System.out.println("Order #" + orderId + " placed successfully!");
+        orderHistory.add(newOrder);
+        System.out.println("  Order #" + orderId + " placed successfully!");
     }
 
     public void printCartOverview(List<Restaurant> restaurants) {
         if (cartStack.isEmpty()) {
-            System.out.println("Cart is empty.");
+            System.out.println("  Cart is empty.");
             return;
         }
-        int rid = getCartRestaurantId();
+        String rid = getCartRestaurantId();
         for (Restaurant r : restaurants) {
-            if (r.getRestaurantID() == rid) {
-                System.out.println("Restaurant: " + r.getName());
+            if (r.getRestaurantID().equals(rid)) {
+                System.out.println("  Restaurant: " + r.getName());
                 break;
             }
         }
         int n = 1;
         for (OrderItem oi : cartStack.getOrderedItems()) {
-            System.out.printf("  %d. %s  x%d  RM %.2f%n",
+            System.out.printf("  %d. %18s   x %d    RM %.2f%n",
                 n++, oi.getFoodItem().getName(), oi.getQuantity(), oi.getTotalPrice());
         }
     }
@@ -88,25 +91,46 @@ public class OrderService {
     }
 
     public void processNextOrder() {
-        if (!processingQueue.isEmpty()) {
-            Order nextOrder = processingQueue.dequeue(); 
-            nextOrder.setStatus("Processing");
-            System.out.println("Now processing " + nextOrder.toString());
-        } else {
-            System.out.println("No pending orders in the queue.");
+        if (processingQueue.isEmpty()) {
+            System.out.println("  No pending orders in the queue.");
+            return;
         }
-    }
 
-    public Order getNextOrder() {
-        if (!processingQueue.isEmpty()) {
-            return processingQueue.peek();
-        } else {
-            System.out.println("No pending orders in the queue.");
-            return null;
-        }
+        Order nextOrder = processingQueue.dequeue();
+        nextOrder.setStatus("Processing");
+        System.out.println("  Now processing " + nextOrder.toString());
+        System.out.println("  Pending orders remaining: " + getPendingCount());
     }
 
     public int getPendingCount() {
         return processingQueue.size();
+    }
+
+    public void printOrderHistory(User user) {
+        List<Order> userOrders = new ArrayList<>();
+        for (Order order : orderHistory) {
+            if (order.getUser().getUserID() == user.getUserID()) {
+                userOrders.add(order);
+            }
+        }
+
+        if (userOrders.isEmpty()) {
+            System.out.println("  You have no order history.");
+            return;
+        }
+
+        for (int i = 0; i < userOrders.size(); i++) {
+            Order order = userOrders.get(i);
+            System.out.println();
+            System.out.println("  Order #" + order.getOrderId());
+            System.out.println("  Restaurant: " + order.getRestaurant().getName());
+            System.out.println("  Status: " + order.getStatus());
+            System.out.println("  Total: RM " + String.format("%.2f", order.getTotalPrice()));
+            System.out.println("  Items:");
+            for (OrderItem item : order.getItems()) {
+                System.out.printf("    - %s x %d (RM %.2f)%n", item.getFoodItem().getName(), 
+                    item.getQuantity(), item.getTotalPrice());
+            }
+        }
     }
 }
