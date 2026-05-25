@@ -1,2 +1,5 @@
-1|jasmine|123456|jasmine@example.com|011-1111111|jasmine home
-2|shaoern|060606|shaoern0606@gmail.com|0123456789|Perai
+1|ahmad|ahmad123|ahmad@example.com|012-3456789|Bukit Bintang Area
+2|siti|siti456|siti@example.com|013-9876543|Jalan Ampang
+3|raj|raj789|raj@example.com|014-5551234|Petaling Jaya Area
+4|tanwei|tanwei234|tanwei@example.com|016-7778899|Bangsar Area
+5|nurulizzah|izzah345|izzah@example.com|017-2223344|KLCC Area

@@ -6,9 +6,9 @@ public class FoodItem {
     private String name;
     private double price;
     private String category;
-    private int restaurantID;
+    private String restaurantID;
 
-    public FoodItem(int itemID, String name, double price, String category, int restaurantID) {
+    public FoodItem(int itemID, String name, double price, String category, String restaurantID) {
         this.itemID = itemID;
         this.name = name;
         this.price = price;
@@ -32,7 +32,7 @@ public class FoodItem {
         return category;
     }
 
-    public int getRestaurantID() {
+    public String getRestaurantID() {
         return restaurantID;
     }
 
@@ -52,12 +52,12 @@ public class FoodItem {
         this.category = category;
     }
 
-    public void setRestaurantID(int restaurantID) {
+    public void setRestaurantID(String restaurantID) {
         this.restaurantID = restaurantID;
     }
 
     @Override
     public String toString() {
-        return String.format("[%d] %-15s | RM%.2f | (%s)", itemID, name, price, category);
+        return String.format("[%d] %-16s | RM%6.2f | (%s)", itemID, name, price, category);
     }
 }

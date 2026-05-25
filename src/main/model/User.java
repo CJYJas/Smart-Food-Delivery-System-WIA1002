@@ -72,14 +72,14 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("[ID: %d] %-15s | %-20s | %-15s | %-30s", userID, username, email, phone, address);
+        return String.format("[ID: %d] %-10s | %-20s | %-15s | %-30s", userID, username, email, phone, address);
     }
 
     public static User login(Scanner scanner, UserManager userManager) {
         App.printHeader("USER LOGIN");
-        System.out.print(" 👤 Username: ");
+        System.out.print("  Username: ");
         String username = scanner.nextLine().trim();
-        System.out.print(" 🔑 Password: ");
+        System.out.print("  Password: ");
         String password = scanner.nextLine();
 
         User user = userManager.searchUser(username);
@@ -93,7 +93,7 @@ public class User {
 
     public static void signup(Scanner scanner, UserManager userManager) {
         App.printHeader("SIGN UP");
-        System.out.print(" 👤 Username: ");
+        System.out.print("  Username: ");
         String username = scanner.nextLine().trim();
         if (username.isEmpty()) {
             App.printError("Username cannot be empty.");
@@ -103,13 +103,13 @@ public class User {
             App.printError("Username already exists.");
             return;
         }
-        System.out.print(" 🔑 Password: ");
+        System.out.print("  Password: ");
         String password = scanner.nextLine();
-        System.out.print(" ✉️ Email: ");
+        System.out.print("  Email: ");
         String email = scanner.nextLine().trim();
-        System.out.print(" 📞 Contact Number: ");
+        System.out.print("  Contact Number: ");
         String phone = scanner.nextLine().trim();
-        System.out.print(" 🏠 Address: ");
+        System.out.print("  Address: ");
         String address = scanner.nextLine().trim();
 
         int newId = userManager.generateNewId();

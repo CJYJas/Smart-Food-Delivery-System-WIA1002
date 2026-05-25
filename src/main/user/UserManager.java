@@ -40,6 +40,10 @@ public class UserManager {
         }
     }
 
+    public java.util.Collection<User> getAllUsers() {
+        return usersById.values();
+    }
+
     public User searchUser(String username) {
         return usersByUsername.get(username);
     }
