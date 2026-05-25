@@ -10,7 +10,7 @@ import main.user.*;
 import main.rider.*;
 
 public class App {
-    public static final String USERS_FILE = "users.txt";
+    public static final String USERS_FILE = "data/users.txt";
     private static final Scanner scanner = new Scanner(System.in);
     private static final OrderService orderService = new OrderService();
     private static final SearchService searchService = new SearchService();
@@ -20,12 +20,12 @@ public class App {
     private static final DeliveryManager deliveryManager = new DeliveryManager(map);
 
     private static User currentUser;
-    private static final List<User> users = new ArrayList<>();
+
     private static final List<Restaurant> restaurants = new ArrayList<>();
 
     public static void main(String[] args) {
         initializeData();
-        User.loadUsers(users, userManager);
+        User.loadUsers(userManager);
 
         printHeader("SMART FOOD DELIVERY SYSTEM");
 
@@ -53,9 +53,10 @@ public class App {
         switch (input) {
             case "1" -> {
                 User loggedIn = User.login(scanner, userManager);
-                if (loggedIn != null) currentUser = loggedIn;
+                if (loggedIn != null)
+                    currentUser = loggedIn;
             }
-            case "2" -> User.signup(scanner, users, userManager);
+            case "2" -> User.signup(scanner, userManager);
             case "0" -> exitApp();
             default -> printError("Invalid option. Please try again.");
         }
@@ -106,54 +107,62 @@ public class App {
     }
 
     private static void initializeData() {
-        try (Scanner sc = new Scanner(new File("locations.csv"))) {
+        try (Scanner sc = new Scanner(new File("data/locations.csv"))) {
             while (sc.hasNextLine()) {
                 String loc = sc.nextLine().trim();
-                if (!loc.isEmpty()) map.addLocation(loc);
+                if (!loc.isEmpty())
+                    map.addLocation(loc);
             }
-        } catch (FileNotFoundException ignored) {}
+        } catch (FileNotFoundException ignored) {
+        }
 
-        try (Scanner sc = new Scanner(new File("roads.csv"))) {
+        try (Scanner sc = new Scanner(new File("data/roads.csv"))) {
             while (sc.hasNextLine()) {
                 String[] parts = sc.nextLine().split(",");
                 if (parts.length == 3) {
                     map.addRoad(parts[0].trim(), parts[1].trim(), Double.parseDouble(parts[2].trim()));
                 }
             }
-        } catch (FileNotFoundException ignored) {}
+        } catch (FileNotFoundException ignored) {
+        }
 
-        try (Scanner sc = new Scanner(new File("restaurants.csv"))) {
+        try (Scanner sc = new Scanner(new File("data/restaurants.csv"))) {
             while (sc.hasNextLine()) {
                 String[] parts = sc.nextLine().split(",");
                 if (parts.length == 4) {
-                    Restaurant r = new Restaurant(Integer.parseInt(parts[0].trim()), parts[1].trim(), parts[2].trim(), Double.parseDouble(parts[3].trim()));
+                    Restaurant r = new Restaurant(Integer.parseInt(parts[0].trim()), parts[1].trim(), parts[2].trim(),
+                            Double.parseDouble(parts[3].trim()));
                     restaurants.add(r);
                     restaurantManager.addRestaurant(r);
                 }
             }
-        } catch (FileNotFoundException ignored) {}
+        } catch (FileNotFoundException ignored) {
+        }
 
-        try (Scanner sc = new Scanner(new File("menu.csv"))) {
+        try (Scanner sc = new Scanner(new File("data/menu.csv"))) {
             while (sc.hasNextLine()) {
                 String[] parts = sc.nextLine().split(",");
                 if (parts.length == 5) {
-                    FoodItem item = new FoodItem(Integer.parseInt(parts[0].trim()), parts[1].trim(), Double.parseDouble(parts[2].trim()), parts[3].trim(), Integer.parseInt(parts[4].trim()));
+                    FoodItem item = new FoodItem(Integer.parseInt(parts[0].trim()), parts[1].trim(),
+                            Double.parseDouble(parts[2].trim()), parts[3].trim(), Integer.parseInt(parts[4].trim()));
                     Restaurant r = restaurantManager.searchRestaurant(item.getRestaurantID());
                     if (r != null) {
                         addFood(r, item);
                     }
                 }
             }
-        } catch (FileNotFoundException ignored) {}
+        } catch (FileNotFoundException ignored) {
+        }
 
-        try (Scanner sc = new Scanner(new File("riders.csv"))) {
+        try (Scanner sc = new Scanner(new File("data/riders.csv"))) {
             while (sc.hasNextLine()) {
                 String[] parts = sc.nextLine().split(",");
                 if (parts.length == 2) {
                     deliveryManager.addRider(parts[0].trim(), Double.parseDouble(parts[1].trim()));
                 }
             }
-        } catch (FileNotFoundException ignored) {}
+        } catch (FileNotFoundException ignored) {
+        }
 
         System.out.println("✔ System ready: Loaded " + restaurants.size() + " restaurants.");
     }
@@ -163,14 +172,13 @@ public class App {
         searchService.addFoodToMenu(item);
     }
 
-
-
     private static void viewRestaurants() {
         printHeader("RESTAURANTS DIRECTORY");
         restaurantManager.displayRestaurant();
         printDivider();
         Integer choice = readOptionalInt(" ➜ Choose restaurant ID (0 to go back): ", 0, 100);
-        if (choice == null || choice == 0) return;
+        if (choice == null || choice == 0)
+            return;
 
         Restaurant selected = restaurantManager.searchRestaurant(choice);
         if (selected == null) {
@@ -232,7 +240,8 @@ public class App {
         }
         printDivider();
         Integer resChoice = readOptionalInt(" ➜ Target Restaurant ID (0 to Cancel): ", 0, restaurants.size());
-        if (resChoice == null || resChoice == 0) return;
+        if (resChoice == null || resChoice == 0)
+            return;
 
         Restaurant selected = restaurantManager.searchRestaurant(resChoice);
         if (selected == null) {
@@ -252,7 +261,8 @@ public class App {
         while (true) {
             System.out.print("Select item number (Enter to finish): ");
             String line = scanner.nextLine().trim();
-            if (line.isEmpty()) break;
+            if (line.isEmpty())
+                break;
             try {
                 int itemId = Integer.parseInt(line);
                 boolean found = false;
@@ -294,7 +304,8 @@ public class App {
         System.out.println("  [0] Back");
         printDivider();
         Integer choice = readOptionalInt(" ➜ Selected action option: ", 0, 2);
-        if (choice == null || choice == 0) return;
+        if (choice == null || choice == 0)
+            return;
 
         if (choice == 1) {
             orderService.undoLastItem();
@@ -323,7 +334,8 @@ public class App {
         }
         printDivider();
         Integer choice = readOptionalInt(" ➜ Origin Restaurant ID (0 to Abort): ", 0, restaurants.size());
-        if (choice == null || choice == 0) return;
+        if (choice == null || choice == 0)
+            return;
 
         String resName = restaurants.get(choice - 1).getName();
         if (!map.hasLocation(resName)) {
@@ -347,8 +359,8 @@ public class App {
         System.out.println();
         int width = 50;
         String lineBorder = "═".repeat(width);
-        
-        int padTotal = width - title.length() - 2; 
+
+        int padTotal = width - title.length() - 2;
         int leftPad = padTotal / 2;
         int rightPad = padTotal - leftPad;
 
@@ -383,7 +395,8 @@ public class App {
                 if (v >= min && v <= max) {
                     return v;
                 }
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
             System.out.println("Please enter a number between " + min + " and " + max + ".");
         }
         printError("Too many invalid attempts.");

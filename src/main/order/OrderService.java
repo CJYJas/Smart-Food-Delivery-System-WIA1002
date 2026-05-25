@@ -9,10 +9,12 @@ import main.model.User;
 public class OrderService {
     private OrderStack cartStack;
     private final OrderQueue processingQueue;
+    private final java.util.HashMap<Integer, Order> orderHistory;
 
     public OrderService() {
-        this.cartStack = new OrderStack(); 
+        this.cartStack = new OrderStack();
         this.processingQueue = new OrderQueue();
+        this.orderHistory = new java.util.HashMap<>();
     }
 
     public void createNewOrder(User user, Restaurant restaurant) {
@@ -20,7 +22,9 @@ public class OrderService {
         System.out.println("Ordering from " + restaurant.getName() + ". Cart cleared — add items below.");
     }
 
-    /** Restaurant id from the first line in the cart, or -1 if the cart is empty. */
+    /**
+     * Restaurant id from the first line in the cart, or -1 if the cart is empty.
+     */
     public int getCartRestaurantId() {
         if (cartStack.isEmpty()) {
             return -1;
@@ -53,6 +57,7 @@ public class OrderService {
             newOrder.addItem(cartStack.pop());
         }
         processingQueue.enqueue(newOrder);
+        orderHistory.put(orderId, newOrder);
         System.out.println("Order #" + orderId + " placed successfully!");
     }
 
@@ -71,7 +76,7 @@ public class OrderService {
         int n = 1;
         for (OrderItem oi : cartStack.getOrderedItems()) {
             System.out.printf("  %d. %s  x%d  RM %.2f%n",
-                n++, oi.getFoodItem().getName(), oi.getQuantity(), oi.getTotalPrice());
+                    n++, oi.getFoodItem().getName(), oi.getQuantity(), oi.getTotalPrice());
         }
     }
 
@@ -89,7 +94,7 @@ public class OrderService {
 
     public void processNextOrder() {
         if (!processingQueue.isEmpty()) {
-            Order nextOrder = processingQueue.dequeue(); 
+            Order nextOrder = processingQueue.dequeue();
             nextOrder.setStatus("Processing");
             System.out.println("Now processing " + nextOrder.toString());
         } else {
@@ -108,5 +113,9 @@ public class OrderService {
 
     public int getPendingCount() {
         return processingQueue.size();
+    }
+
+    public Order getOrderDetails(int orderId) {
+        return orderHistory.get(orderId);
     }
 }
