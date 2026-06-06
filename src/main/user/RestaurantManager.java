@@ -1,18 +1,18 @@
 package main.user;
 
-import java.util.LinkedList;
+import main.dataStructure.MyLinkedList;
 import main.model.Restaurant;
 
 public class RestaurantManager {
 
-    private LinkedList<Restaurant> restaurants;
+    private MyLinkedList<Restaurant> restaurants;
 
     public RestaurantManager() {
-        this.restaurants = new LinkedList<>();
+        this.restaurants = new MyLinkedList<>();
     }
 
     public void addRestaurant(Restaurant restaurant) {
-        if(searchRestaurant(restaurant.getRestaurantID()) != null) {
+        if (searchRestaurant(restaurant.getRestaurantID()) != null) {
             System.out.println("Restaurant with ID " + restaurant.getRestaurantID() + " already exists.");
             return;
         }
@@ -21,7 +21,7 @@ public class RestaurantManager {
     }
 
     public boolean removeRestaurant(String restaurantID) {
-        for (int i = 0; i < restaurants.size(); i++) {
+        for (int i = 0; i < restaurants.getSize(); i++) {
             Restaurant restaurant = restaurants.get(i);
             if (restaurant.getRestaurantID().equals(restaurantID)) {
                 restaurants.remove(i);
@@ -42,7 +42,7 @@ public class RestaurantManager {
     }
 
     public Restaurant searchRestaurant(String restaurantID) {
-        for (int i = 0; i < restaurants.size(); i++) {
+        for (int i = 0; i < restaurants.getSize(); i++) {
             Restaurant restaurant = restaurants.get(i);
             if (restaurant.getRestaurantID().equals(restaurantID)) {
                 return restaurant;

@@ -1,15 +1,15 @@
 package main.rider;
 
-import java.util.PriorityQueue;
+import main.dataStructure.MyPriorityQueue;
 import main.navigation.*;
 
 public class DeliveryManager {
-    PriorityQueue<Rider> availableRider;
+    MyPriorityQueue<Rider> availableRider;
     CityGraph<String, Double> distance;
 
     public DeliveryManager(CityGraph<String, Double> distance) {
         this.distance = distance;
-        this.availableRider = new PriorityQueue<>();
+        this.availableRider = new MyPriorityQueue<>();
     }
 
     public String generateNextRiderId() {

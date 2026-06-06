@@ -1,29 +1,29 @@
 package main.order;
 
-import java.util.LinkedList;
-import main.model.*;
+import main.dataStructure.MyQueue;
+import main.model.Order;
 
 public class OrderQueue {
-    private LinkedList<Order> orders;
+    private final MyQueue<Order> orders;
 
     public OrderQueue() {
-        this.orders = new LinkedList<>();
+        this.orders = new MyQueue<>();
     }
 
     public void enqueue(Order order) {
-        orders.addLast(order);
+        orders.enqueue(order);
     }
 
     public Order dequeue() {
-        return orders.removeFirst();
+        return orders.dequeue();
     }
-    
+
     public Order peek() {
-        return orders.peekFirst();
+        return orders.peek();
     }
 
     public int size() {
-        return orders.size();
+        return orders.getSize();
     }
 
     public boolean isEmpty() {
