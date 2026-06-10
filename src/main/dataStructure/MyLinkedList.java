@@ -2,11 +2,18 @@ package main.dataStructure;
 
 import java.util.Iterator;
 
+/**
+ * A custom implementation of a generic Singly Linked List that implements
+ * Iterable.
+ */
 public class MyLinkedList<T> implements Iterable<T> {
     private Node<T> head = null;
     private int size = 0;
 
-    // Add an item to the end of the list
+    /**
+     * Appends a new item to the end of the linked list by traversing to the last
+     * node.
+     */
     public void add(T element) {
         Node<T> newNode = new Node<>(element);
         if (head == null) {
@@ -21,7 +28,9 @@ public class MyLinkedList<T> implements Iterable<T> {
         size++;
     }
 
-    // Get an item at a specific index
+    /**
+     * Retrieves the item data located at the specified zero-based index.
+     */
     public T get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
@@ -33,7 +42,9 @@ public class MyLinkedList<T> implements Iterable<T> {
         return current.data;
     }
 
-    // Remove an item at a specific index
+    /**
+     * Removes and returns the item located at the specified zero-based index.
+     */
     public T remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds");
@@ -55,14 +66,20 @@ public class MyLinkedList<T> implements Iterable<T> {
         return removedNode.data;
     }
 
+    // return size of the list/number of node
     public int getSize() {
         return size;
     }
 
+    // determine whther the list is empty
     public boolean isEmpty() {
         return head == null;
     }
 
+    /**
+     * Returns a standard iterator to enable for-each loop traversal over the list
+     * items.
+     */
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {

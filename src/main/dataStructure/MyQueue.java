@@ -1,11 +1,18 @@
 package main.dataStructure;
 
+/**
+ * A custom First-In, First-Out Queue implementation utilizing head and tail
+ * node references.
+ */
 public class MyQueue<T> {
     private Node<T> head = null;
     private Node<T> tail = null;
     private int size = 0;
 
-    // Add to the back of the queue
+    /**
+     * Appends a new element directly to the back of the queue using the tail
+     * pointer.
+     */
     public void enqueue(T element) {
         Node<T> newNode = new Node<>(element);
         if (tail == null) {
@@ -18,7 +25,10 @@ public class MyQueue<T> {
         size++;
     }
 
-    // Remove from the front of the queue
+    /**
+     * Removes and returns the element at the front of the queue using the head
+     * pointer.
+     */
     public T dequeue() {
         if (head == null)
             return null;
@@ -30,6 +40,9 @@ public class MyQueue<T> {
         return data;
     }
 
+    /**
+     * Returns the element at the front of the queue without removing it.
+     */
     public T peek() {
         if (head == null) {
             return null;
@@ -37,10 +50,12 @@ public class MyQueue<T> {
         return head.data;
     }
 
+    // check the size of the queue
     public int getSize() {
         return this.size;
     }
 
+    // determine whether the queue is empty
     public boolean isEmpty() {
         return head == null;
     }

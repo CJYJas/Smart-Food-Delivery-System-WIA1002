@@ -2,10 +2,18 @@ package main.dataStructure;
 
 import java.util.Iterator;
 
+/**
+ * A custom implementation of a Priority Queue based on a sequentially sorted
+ * linked list.
+ */
 public class MyPriorityQueue<T extends Comparable<T>> implements Iterable<T> {
     private Node<T> head = null;
     private int size = 0;
 
+    /**
+     * Returns an iterator that traverses the queue elements from highest to lowest
+     * priority.
+     */
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
@@ -25,7 +33,10 @@ public class MyPriorityQueue<T extends Comparable<T>> implements Iterable<T> {
         };
     }
 
-    // Insert item in the correct sorted position based on priority
+    /**
+     * Inserts an item into its correct sorted position based on natural priority
+     * order.
+     */
     public void offer(T element) {
         Node<T> newNode = new Node<>(element);
 
@@ -45,7 +56,9 @@ public class MyPriorityQueue<T extends Comparable<T>> implements Iterable<T> {
         size++;
     }
 
-    // Remove and return the highest priority item (front of queue)
+    /**
+     * Removes and returns the highest priority item from the front of the queue.
+     */
     public T removeMin() {
         if (isEmpty())
             return null;
@@ -55,35 +68,44 @@ public class MyPriorityQueue<T extends Comparable<T>> implements Iterable<T> {
         return data;
     }
 
-    // Alias for removeMin (like poll in Java)
+    /**
+     * Serves as an alias for removeMin to match standard queue naming conventions.
+     */
     public T poll() {
         return removeMin();
     }
 
-    // Look at the highest priority item without removing
+    /**
+     * Returns the highest priority item from the front without removing it.
+     */
     public T peek() {
         if (isEmpty())
             return null;
         return head.data;
     }
 
-    // Clear the entire queue
+    /**
+     * Resets the queue by clearing the head reference and setting the size to zero.
+     */
     public void clear() {
         head = null;
         size = 0;
     }
 
-    // Return number of elements
+    // check the size of the priority queue
     public int size() {
         return size;
     }
 
-    // Check if queue is empty
+    // check whether the priority queue is empty
     public boolean isEmpty() {
         return head == null;
     }
 
-    // Check if queue contains a specific element
+    /**
+     * Checks if a matching element exists within the queue by performing a linear
+     * search.
+     */
     public boolean contains(T element) {
         Node<T> current = head;
         while (current != null) {
