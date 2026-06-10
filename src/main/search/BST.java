@@ -2,9 +2,13 @@ package main.search;
 
 import main.model.FoodItem;
 
+// Binary search tree keyed by main.model.FoodItem#getName() (case-insensitive).
+// Supports insertion and lookup by name and provides an in-order traversal for printing items in alphabetical order.
 public class BST {
     private TreeNode root;
     
+    // Search for an item by name (case-insensitive).
+    // Returns matching FoodItem or null if not found.
     public FoodItem search(String targetName) {
         TreeNode current = root;
         while (current != null) {
@@ -19,6 +23,8 @@ public class BST {
         return null;     
     }
     
+    // Insert a FoodItem ordered by name.
+    // Returns true if inserted, false when duplicate name exists.
     public boolean insert(FoodItem newItem) {
         if (root == null) {
             root = new TreeNode(newItem);
@@ -47,10 +53,12 @@ public class BST {
         }
     }
     
+    // Print menu items in alphabetical order (in-order traversal).
     public void displayMenu() {
         inOrder(root);
     }
     
+    // In-order traversal helper that prints each item's toString().
     private void inOrder(TreeNode node) {
         if (node != null) {
             inOrder(node.left);

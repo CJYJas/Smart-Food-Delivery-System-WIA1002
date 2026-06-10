@@ -4,8 +4,7 @@ import main.dataStructure.MyPriorityQueue;
 import main.navigation.*;
 
 /**
- * Manages available delivery riders and coordinates priority-based rider
- * assignments.
+ * Manages available delivery riders and coordinates priority-based rider assignments.
  */
 public class DeliveryManager {
     MyPriorityQueue<Rider> availableRider;
@@ -20,8 +19,7 @@ public class DeliveryManager {
     }
 
     /**
-     * Scans active riders to find the highest numeric ID and increments it for the
-     * next unique ID.
+     * Scans active riders to find the highest numeric ID and increments it for the next unique ID.
      */
     public String generateNextRiderId() {
         int maxId = 0;
@@ -42,8 +40,7 @@ public class DeliveryManager {
     }
 
     /**
-     * Creates and enqueues a new rider with a auto-generated ID and auto-calculated
-     * estimated time.
+     * Creates and enqueues a new rider with a auto-generated ID and auto-calculated estimated time.
      */
     public Rider addRider(String name, double distance) {
         String nextId = generateNextRiderId();
@@ -53,16 +50,14 @@ public class DeliveryManager {
     }
 
     /**
-     * Directly inserts a rider record containing explicit fields parsed from a CSV
-     * file.
+     * Directly inserts a rider record containing explicit fields parsed from a CSV file.
      */
     public void addRiderFromCsv(String riderId, String name, int estTime, double distanceKm) {
         availableRider.offer(new Rider(riderId, name, estTime, distanceKm));
     }
 
     /**
-     * Extracts and assigns the highest priority rider currently available from the
-     * queue.
+     * Extracts and assigns the highest priority rider currently available from the queue.
      */
     public void assignBestRider() {
         if (availableRider.isEmpty()) {

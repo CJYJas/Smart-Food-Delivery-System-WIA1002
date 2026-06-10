@@ -1,8 +1,7 @@
 package main.dataStructure;
 
 /**
- * A generic Node class representing a single element in a singly linked
- * structure.
+ * A generic Node class representing a single element in a singly linked structure.
  */
 public class Node<T> {
     public T data; // Holds the actual object (like an Order)

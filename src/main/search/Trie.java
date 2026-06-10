@@ -2,6 +2,7 @@ package main.search;
 
 import main.model.FoodItem;
 
+// Node for Trie: 26 children for letters a-z, end marker, and optional item.
 class TrieNode {
     TrieNode[] children;
     boolean isEndOfWord;
@@ -13,6 +14,8 @@ class TrieNode {
     }
 }
 
+// Trie mapping lowercase food names to FoodItem for fast exact lookups.
+// Non-letter characters are ignored by insert/search.
 public class Trie {
     private TrieNode root;
     
@@ -20,6 +23,7 @@ public class Trie {
         root = new TrieNode();
     }
     
+    // Insert a name and associate it with an item. Skips non-letter chars.
     public void insert(String key, FoodItem item) {
         TrieNode curr = root;
         String word = key.toLowerCase();
@@ -37,6 +41,7 @@ public class Trie {
         curr.item = item;
     }
     
+    // Search for an exact name and return the associated FoodItem, or null.
     public FoodItem search(String key) {
         TrieNode curr = root;
         String word = key.toLowerCase();

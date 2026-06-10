@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A custom Last-In, First-Out Stack implementation utilizing a single top node
- * reference.
+ * A custom Last-In, First-Out Stack implementation utilizing a single top node reference.
  */
 public class MyStack<T> {
     private Node<T> top = null;
@@ -53,15 +52,13 @@ public class MyStack<T> {
     }
 
     /**
-     * Converts and reverses the stack elements into an ArrayList representing
-     * original insertion order.
+     * Converts and reverses the stack elements into an ArrayList representing original insertion order.
      */
     public List<T> toList() {
         List<T> list = new ArrayList<>();
         Node<T> current = top;
         // Because a node stack reads from top to bottom (last-in to first-in),
-        // we insert at index 0 each time to reverse it back to "first-added first"
-        // order.
+        // we insert at index 0 each time to reverse it back to "first-added first" order.
         while (current != null) {
             list.add(0, current.data);
             current = current.next;

@@ -3,16 +3,14 @@ package main.dataStructure;
 import java.util.Iterator;
 
 /**
- * A custom implementation of a Priority Queue based on a sequentially sorted
- * linked list.
+ * A custom implementation of a Priority Queue based on a sequentially sorted linked list.
  */
 public class MyPriorityQueue<T extends Comparable<T>> implements Iterable<T> {
     private Node<T> head = null;
     private int size = 0;
 
     /**
-     * Returns an iterator that traverses the queue elements from highest to lowest
-     * priority.
+     * Returns an iterator that traverses the queue elements from highest to lowest priority.
      */
     @Override
     public Iterator<T> iterator() {
@@ -34,8 +32,7 @@ public class MyPriorityQueue<T extends Comparable<T>> implements Iterable<T> {
     }
 
     /**
-     * Inserts an item into its correct sorted position based on natural priority
-     * order.
+     * Inserts an item into its correct sorted position based on natural priority order.
      */
     public void offer(T element) {
         Node<T> newNode = new Node<>(element);
@@ -103,8 +100,7 @@ public class MyPriorityQueue<T extends Comparable<T>> implements Iterable<T> {
     }
 
     /**
-     * Checks if a matching element exists within the queue by performing a linear
-     * search.
+     * Checks if a matching element exists within the queue by performing a linear search.
      */
     public boolean contains(T element) {
         Node<T> current = head;

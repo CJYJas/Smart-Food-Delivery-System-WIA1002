@@ -33,8 +33,7 @@ public class Rider implements Comparable<Rider> {
     }
 
     /**
-     * Compares riders using estimated arrival time followed by distance as a
-     * tiebreaker.
+     * Compares riders using estimated arrival time followed by distance as a tiebreaker.
      */
     @Override
     public int compareTo(Rider r) {
@@ -45,8 +44,7 @@ public class Rider implements Comparable<Rider> {
     }
 
     /**
-     * Formats the rider's information details into a clean string statement
-     * representation.
+     * Formats the rider's information details into a clean string statement representation.
      */
     @Override
     public String toString() {
