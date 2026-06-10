@@ -1,12 +1,24 @@
 package main.navigation;
 
+/**
+ * Represents a specific location (node) within the city graph.
+ */
 public class LocationNode<T extends Comparable<T>, N extends Comparable<N>> {
+    // The generic data (e.g., city name) stored in this node
     private final T info;
+    // The first outgoing edge from this location
     private MapEdge<T, N> edge;
+    // Number of incoming edges
     private int indegree;
+    // Number of outgoing edges
     private int outdegree;
+    // Pointer to the next location node in the graph's main list
     LocationNode<T, N> nextNode;
 
+    /**
+     * Initializes a new location node.
+     * @param data the information to store in the node
+     */
     public LocationNode(T data) {
         this.info = data;
         this.edge = null;

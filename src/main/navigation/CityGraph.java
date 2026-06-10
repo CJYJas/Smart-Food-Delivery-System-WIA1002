@@ -2,13 +2,24 @@ package main.navigation;
 
 import java.util.*;
 
+/**
+ * Represents a graph of city locations and the roads connecting them.
+ */
 public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
+    // The first node in the adjacency list representing the graph
     private LocationNode<T, N> head;
 
+    /**
+     * Initializes an empty city graph.
+     */
     public CityGraph() {
         this.head = null;
     }
 
+    /**
+     * Adds a new location (vertex) to the graph.
+     * @param location the identifier of the new location
+     */
     public void addLocation(T location) {
         LocationNode<T, N> newNode = new LocationNode<>(location);
         if (head == null) {
@@ -22,6 +33,12 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
         }
     }
 
+    /**
+     * Adds a directed road (edge) between two existing locations.
+     * @param from the starting location
+     * @param to the destination location
+     * @param weight the distance or cost of the road
+     */
     public void addRoad(T from, T to, double  weight) {
         LocationNode<T, N> fromNode = findLocation(from);
         LocationNode<T, N> toNode = findLocation(to);
@@ -72,6 +89,12 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
 
     private final Map<LocationNode<T, N>, LocationNode<T, N>> pathTracker = new HashMap<>();
 
+    /**
+     * Calculates the shortest distance between two locations using Dijkstra's algorithm.
+     * @param from the starting location
+     * @param to the destination location
+     * @return the shortest distance, or Double.MAX_VALUE if no path exists
+     */
     public double getShortestDistance(T from, T to) {
         LocationNode<T, N> fromNode = findLocation(from);
         LocationNode<T, N> toNode = findLocation(to);
@@ -117,6 +140,12 @@ public class CityGraph<T extends Comparable<T>, N extends Comparable<N>> {
         return Double.MAX_VALUE;
     }
 
+    /**
+     * Retrieves the sequence of locations forming the shortest path.
+     * @param from the starting location
+     * @param to the destination location
+     * @return a list of locations representing the path
+     */
     public List<T> getShortestPath(T from, T to) {
         LocationNode<T, N> fromNode = findLocation(from);
         LocationNode<T, N> toNode = findLocation(to);
