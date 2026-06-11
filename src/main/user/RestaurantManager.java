@@ -13,11 +13,11 @@ public class RestaurantManager {
 
     public void addRestaurant(Restaurant restaurant) {
         if (searchRestaurant(restaurant.getRestaurantID()) != null) {
-            System.out.println("Restaurant with ID " + restaurant.getRestaurantID() + " already exists.");
+            System.out.println("    Restaurant with ID " + restaurant.getRestaurantID() + " already exists.");
             return;
         }
         restaurants.add(restaurant);
-        System.out.println("Restaurant added: " + restaurant.getName());
+        System.out.println("    Restaurant added: " + restaurant.getName());
     }
 
     public boolean removeRestaurant(String restaurantID) {
@@ -25,11 +25,11 @@ public class RestaurantManager {
             Restaurant restaurant = restaurants.get(i);
             if (restaurant.getRestaurantID().equals(restaurantID)) {
                 restaurants.remove(i);
-                System.out.println("Restaurant removed: " + restaurant.getName());
+                System.out.println("    Restaurant removed: " + restaurant.getName());
                 return true;
             }
         }
-        System.out.println("Restaurant with ID " + restaurantID + " not found.");
+        System.out.println("    Restaurant with ID " + restaurantID + " not found.");
         return false;
     }
 
