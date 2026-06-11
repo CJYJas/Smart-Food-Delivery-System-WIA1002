@@ -2,13 +2,20 @@ package main.search;
 
 import main.model.FoodItem;
 
-// Binary search tree keyed by main.model.FoodItem#getName() (case-insensitive).
-// Supports insertion and lookup by name and provides an in-order traversal for printing items in alphabetical order.
+/**
+ * Binary search tree storing FoodItems keyed by name (case-insensitive).
+ * Does not allow duplicate names.
+ */
 public class BST {
+    /** The root node of the BST. Null if the tree is empty. */
     private TreeNode root;
     
-    // Search for an item by name (case-insensitive).
-    // Returns matching FoodItem or null if not found.
+    /**
+     * Search for a FoodItem by name in the BST. The search is case-insensitive.
+     * 
+     * @param targetName the name of the food item to search for
+     * @return the matching FoodItem, or null if not found
+     */
     public FoodItem search(String targetName) {
         TreeNode current = root;
         while (current != null) {
@@ -23,8 +30,13 @@ public class BST {
         return null;     
     }
     
-    // Insert a FoodItem ordered by name.
-    // Returns true if inserted, false when duplicate name exists.
+    /**
+     * Insert a FoodItem into the BST. The item is inserted in the correct position based on its name (case-insensitive).
+     * If an item with the same name already exists, it will not be inserted again.
+     *
+     * @param newItem the FoodItem to insert
+     * @return true if the item was inserted, false if an item with the same name already exists
+     */
     public boolean insert(FoodItem newItem) {
         if (root == null) {
             root = new TreeNode(newItem);
@@ -53,12 +65,12 @@ public class BST {
         }
     }
     
-    // Print menu items in alphabetical order (in-order traversal).
+    /** Display the menu items in alphabetical order using an in-order traversal of the BST. */
     public void displayMenu() {
         inOrder(root);
     }
     
-    // In-order traversal helper that prints each item's toString().
+    /** Helper method for in-order traversal of the BST. */
     private void inOrder(TreeNode node) {
         if (node != null) {
             inOrder(node.left);
